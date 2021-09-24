@@ -1,0 +1,49 @@
+{% extends 'pages/template.html' %}
+{% load static %}
+
+{% block content %}
+
+<h3>Procedimentos</h3>
+<a href="{% url 'create-schedule' %}" class="btn btn-success">Inserir</a>
+<hr>
+<div class="table-responsive">
+    <table class="table table-striped">
+        <tr>
+            <th>Profissional</th>
+            <th>Inicio</th>
+            <th>Final</th>
+            <th>Intervalo</th>
+            <th>Dia da Semana</th>
+            <th>Ativo</th>
+            <th>Opções</th>
+        </tr>
+
+        {% for obj in object_list %}
+        <tr>
+            <td>{{obj.professional}}</td>
+            <td>{{obj.begin}}</td>
+            <td>{{obj.end}}</td>
+            <td>{{obj.interval}}</td>
+            <td>{{obj.weekday}}</td>
+            <td>{{obj.active}}</td>
+
+
+            <td>
+                <a href="{% url 'edit-schedule' obj.pk %}" class="btn btn-warning btn-sm">Editar</a>
+                <a href="{% url 'delete-schedule' obj.pk %}" class="btn btn-danger btn-sm">Excluir</a>
+            </td>
+
+        </tr>
+
+        {% empty %}
+        <tr>
+            <td colspan="3">
+                Nenhum Registro encontrado
+            </td>
+        </tr>
+        {% endfor %}
+
+    </table>
+</div>
+
+{% endblock %}

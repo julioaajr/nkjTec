@@ -1,0 +1,27 @@
+{% extends 'pages/template.html' %}
+{% load static %}
+
+{% block title %}
+<title>Excluir Registro</title>
+{% endblock %}
+
+{% block content %}
+
+<div class="container">
+    <hr><hr><hr>
+    <h3>Excluir registro</h3>
+    <p class="lead"> Preencha todos os campos</p>
+    <hr>
+    <form action="" method="post">
+        <p>
+            Deseja Excluir o registro <strong>{{ object }}</strong>
+        </p>
+        {% csrf_token %}
+
+        {{ form.as_p }}
+        <button type="submit" class="btn btn-danger">Excluir</button>
+
+    </form>
+</div>
+
+{% endblock %}
