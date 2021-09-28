@@ -1,10 +1,10 @@
-from functools import partial
 from django.urls import path
-from .views import *
-
+from django.contrib.auth import views as auth_views
 
 urlpatterns =[
-    #cadastrar
-#    path('cadastrar/campo/', CampoCreate.as_view(), name ='cadastrar-campo'),
+    path('login/', auth_views.LoginView.as_view(
+        template_name = 'users/form.html',
+    ), name ='login'),
+    path('logout/',auth_views.LogoutView.as_view(), name='logout'),
 
 ]
