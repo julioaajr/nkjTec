@@ -3,8 +3,20 @@
 
 {% block content %}
 
-<h3>Procedimentos</h3>
-<a href="{% url 'create-appointment' %}" class="btn btn-success">Inserir</a>
+<h3>Agendamentos</h3>
+<hr>
+<div class="row ml-auto">
+    <div class="col-sm">
+        <form method="get" class="form-inline my-2 my-lg-0 mt-2" action="">
+            <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search" id="search"
+                name="search" autofocus>
+            <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
+        </form>
+    </div>
+    <div class="col-sm">
+        <a href="{% url 'create-appointment' %}" class="btn btn-success">Inserir</a>
+    </div>
+</div>
 <hr>
 <div class="table-responsive">
     <table class="table table-striped">

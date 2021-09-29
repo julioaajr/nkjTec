@@ -4,48 +4,55 @@
 {% block content %}
 
 
-    <h3>Procedimentos</h3>
-    <a href="{% url 'create-dayoff' %}" class="btn btn-success">Inserir</a>
-
-    <form method= "get" class="form-inline my-2 my-lg-0 mt-2" action="">
-        <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search" id = "search" name="search" autofocus>
-        <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
-    </form>
-
-    <hr>
-    <div class="table-responsive">
-        <table class="table table-striped">
-            <tr>
-                <th>Profissional</th>
-                <th>Data</th>
-                <th>Motivo</th>
-                <th>Ativo</th>
-                <th>Opções</th>
-            </tr>
-
-            {% for obj in object_list %}
-            <tr>
-                <td>{{obj.professional}}</td>
-                <td>{{obj.daydate}}</td>
-                <td>{{obj.reason}}</td>
-                <td>{{obj.active}}</td>
-
-                <td>
-                    <a href="{% url 'edit-dayoff' obj.pk %}" class="btn btn-warning btn-sm">Editar</a>
-                    <a href="{% url 'delete-dayoff' obj.pk %}" class="btn btn-danger btn-sm">Excluir</a>
-                </td>
-
-            </tr>
-
-            {% empty %}
-            <tr>
-                <td colspan="3">
-                    Nenhum Registro encontrado
-                </td>
-            </tr>
-            {% endfor %}
-
-        </table>
+<h3>Feriado</h3>
+<hr>
+<div class="row ml-auto">
+    <div class="col-sm">
+        <form method="get" class="form-inline my-2 my-lg-0 mt-2" action="">
+            <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search" id="search"
+                name="search" autofocus>
+            <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
+        </form>
     </div>
+    <div class="col-sm">
+        <a href="{% url 'create-dayoff' %}" class="btn btn-success ml-5">Inserir</a>
+    </div>
+</div>
+
+<hr>
+<div class="table-responsive">
+    <table class="table table-striped">
+        <tr>
+            <th>Profissional</th>
+            <th>Data</th>
+            <th>Motivo</th>
+            <th>Ativo</th>
+            <th>Opções</th>
+        </tr>
+
+        {% for obj in object_list %}
+        <tr>
+            <td>{{obj.professional}}</td>
+            <td>{{obj.daydate}}</td>
+            <td>{{obj.reason}}</td>
+            <td>{{obj.active}}</td>
+
+            <td>
+                <a href="{% url 'edit-dayoff' obj.pk %}" class="btn btn-warning btn-sm">Editar</a>
+                <a href="{% url 'delete-dayoff' obj.pk %}" class="btn btn-danger btn-sm">Excluir</a>
+            </td>
+
+        </tr>
+
+        {% empty %}
+        <tr>
+            <td colspan="3">
+                Nenhum Registro encontrado
+            </td>
+        </tr>
+        {% endfor %}
+
+    </table>
+</div>
 
 {% endblock %}

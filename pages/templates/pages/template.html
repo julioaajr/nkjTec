@@ -16,47 +16,48 @@
 </head>
 
 <body class="bg-light ml-auto">
+    <div class="mb-5">
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark mb-3  fixed-top">
         <a class="navbar-brand" href="/">NkTec</a>
+        {% if request.user.is_authenticated %}
+        <ul class="navbar-nav mr-auto">
+            <li class="nav-item">
+                <a class="nav-link" href="">Agenda</a>
+            </li>
+            <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown"
+                    aria-haspopup="true" aria-expanded="false">
+                    Cadastros
+                </a>
+                <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                    <a class="dropdown-item" href="{% url 'list-procedure' %}">Procedimento</a>
+                    <a class="dropdown-item" href="{% url 'list-status' %}">Status</a>
+                    <a class="dropdown-item" href="{% url 'list-payment' %}">Forma de pagamento</a>
+                    <a class="dropdown-item" href="{% url 'list-schedule' %}">Horários</a>
+                    <a class="dropdown-item" href="{% url 'list-dayoff' %}">Feriados</a>
+                    <div class="dropdown-divider"></div>
+                    <a class="dropdown-item" href="{% url 'list-appointment' %}">Agendamento</a>
+                </div>
+            </li>
+        </ul>
+        {% endif %}
+        <div class="ml-auto">
             {% if request.user.is_authenticated %}
-            <ul class="navbar-nav mr-auto">
-                <li class="nav-item">
-                    <a class="nav-link" href="">Agenda</a>
-                </li>
-
-                <li class="nav-item dropdown">
-                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button"
-                        data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                        Cadastros
-                    </a>
-                    <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                        <a class="dropdown-item" href="{% url 'list-procedure' %}">Procedimento</a>
-                        <a class="dropdown-item" href="{% url 'list-status' %}">Status</a>
-                        <a class="dropdown-item" href="{% url 'list-payment' %}">Forma de pagamento</a>
-                        <a class="dropdown-item" href="{% url 'list-schedule' %}">Horários</a>
-                        <a class="dropdown-item" href="{% url 'list-dayoff' %}">Feriados</a>
-                        <div class="dropdown-divider"></div>
-                        <a class="dropdown-item" href="{% url 'list-appointment' %}">Agendamento</a>
-                    </div>
-                </li>
-            </ul>
+            <a class="btn btn-outline-light" href="{% url 'logout'%}">Logout</a>
+            {% else %}
+            <a class="btn btn-outline-light" href="{% url 'login'%}">Login</a>
             {% endif %}
-            <div class="ml-auto">
-                {% if request.user.is_authenticated %}
-                <a class="btn btn-outline-light" href="{% url 'logout'%}">Logout</a>
-                {% else %}
-                <a class="btn btn-outline-light" href="{% url 'login'%}">Login</a>
-                {% endif %}
-            </div>
+        </div>
 
     </nav>
-    <div class="pt-auto">
+    </div>
+    <div class="mx-4 pt-2">
         {% block loginform %}
         {% endblock loginform %}
         {% block content%}
         {% endblock %}
-    </div>
 
+    </div>
     <!-- Optional JavaScript -->
     <!-- jQuery first, then Popper.js, then Bootstrap JS -->
     <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js"
