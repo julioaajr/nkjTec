@@ -57,15 +57,15 @@ class Appointment(models.Model):
     professional = models.ForeignKey(User, models.DO_NOTHING, related_name="professionalss", verbose_name="Profissional")
     status = models.ForeignKey(Status, models.DO_NOTHING, verbose_name="Status")
     procedure = models.ForeignKey(Procedure, models.DO_NOTHING, verbose_name="Procedimento")
-    payment = models.ForeignKey(Payment, models.DO_NOTHING, verbose_name="Pagamento")
+    payment = models.ForeignKey(Payment, models.DO_NOTHING,null=True,blank=True, verbose_name="Pagamento")
     appdate = models.CharField(max_length=10, verbose_name="Data")#format dd/mm/yyyy
     apphour = models.CharField(max_length=5, verbose_name="Horário")#format hh:mm
     total = models.IntegerField(blank = True, null = True, verbose_name="Total")
     active = models.BooleanField(default=True, verbose_name="Ativo")
     created_at = models.DateTimeField(auto_now=True, verbose_name="Criado em")
     def __str__(self):
-        return str(self.apphour)
-        
+        #return "{} - Cliente: {}".format(self.apphour,self.client)
+        return " {} ".format(self.apphour)
 
     def get_apphour(self):
         return self.__apphour
@@ -74,13 +74,14 @@ class Appointment(models.Model):
 
 class Schedule(models.Model):
     WEEKDAY = (
-        ('0', 'Domingo'),
-        ('1', 'Segunda-feira'),
-        ('2', 'Terça-feira'),
-        ('3', 'Quarta-feira'),
-        ('4', 'Quinta-feira'),
-        ('5', 'Sexta-feira'),
-        ('6', 'Sábado'),
+
+        ('0', 'Segunda-feira'),
+        ('1', 'Terça-feira'),
+        ('2', 'Quarta-feira'),
+        ('3', 'Quinta-feira'),
+        ('4', 'Sexta-feira'),
+        ('5', 'Sábado'),
+        ('6', 'Domingo'),
     ) #0 = monday
     weekday = models.CharField(max_length=1, choices=WEEKDAY,default=0, verbose_name="Dia da Semana")
     professional = models.ForeignKey(User, models.DO_NOTHING, verbose_name="Profissional")
@@ -99,3 +100,5 @@ class DayOff (models.Model):
     reason = models.CharField(max_length=255, verbose_name="Motivo")
     active = models.BooleanField(default=True, verbose_name="Ativo")
     created_at = models.DateTimeField(auto_now=True, verbose_name="Criado em.")
+    def __str__(self):
+        return " Feriado {}  {}".format (self.daydate,self.reason)

@@ -1,7 +1,7 @@
 from datetime import *
 import smtplib
 from email.mime.text import MIMEText
-from datetime import timedelta
+from datetime import timedelta, datetime
 
 
 class Time:
@@ -14,16 +14,16 @@ class Time:
     def convertehora(self, hora):
         return  (timedelta(hours=int(hora[0:2]), minutes=int(hora[3:])))
 
-    
+    #schedule = dict(begin='08:00', end='18:00', interval='60')    #busy = ['15:00', '09:00', '18:00']
     #schedule espera um dict com begin end e interval e busy espera uma lista
-    def FreeSchedule(self,beginx,endx,intervalx,busy):
-        begin = timedelta(hours=int(beginx.split(':')[0]),minutes=int(beginx.split(':')[1]))
-        end = timedelta(hours=int(endx.split(':')[0]),minutes=int(endx.split(':')[1]))
-        interval = timedelta(minutes= int(intervalx))
+    def FreeSchedule(self,schedule,busy):
+        begin = timedelta(hours=int(schedule.begin.split(':')[0]),minutes=int(schedule.begin.split(':')[1]))
+        end = timedelta(hours=int(schedule.end.split(':')[0]),minutes=int(schedule.end.split(':')[1]))
+        interval = timedelta(minutes= int(schedule.interval))
         free = []
         busylist = []
         for i in busy:
-            busylist.append(timedelta(hours = int(i.split(":")[0]), minutes= int(i.split(":")[1])))
+            busylist.append(timedelta(hours = int(i.apphour.split(":")[0]), minutes= int(i.apphour.split(":")[1])))
         while begin <= end:
             if begin not in busylist:
                 aux = str(begin).split(':')[0]+":"+str(begin).split(':')[1]
@@ -60,9 +60,3 @@ class Users:
         pass
 
 
-beginx='08:00'
-endx='18:00'
-intervalx='60'
-busyx = ['15:00', '09:00', '18:00']
-
-print(Time().FreeSchedule(beginx,endx,intervalx,busyx))

@@ -1,0 +1,70 @@
+{% extends 'pages/template.html' %}
+{% load static %}
+
+{% block content %}
+
+<h3>Agendamentos</h3>
+<hr>
+<div class="row ml-auto">
+    <div class="col-sm">
+        <form method="get" class="form-inline my-2 my-lg-0 mt-2" action="">
+            <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search" id="search"
+                name="search" autofocus>
+            <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
+        </form>
+    </div>
+    <div class="col-sm px-2">
+        <a href="{% url 'create-appointment' %}" class="btn btn-success">Inserir</a>
+    </div>
+</div>
+<div class="row pt-2 pb-auto">
+    {% for item in feriados%}
+    <div class="alert alert-danger ml-4" role="alert">
+        {{item}}
+      </div>
+    {% endfor %}
+</div>
+<div class="table-responsive">
+    <table class="table table-striped">
+        <tr>
+            <th>Horário</th>
+            <th>Cliente</th>
+            <th>Status</th>
+            <th>Procedimento</th>
+            <th>Pagamento</th>
+            <th>Opções</th>
+        </tr>
+
+        {% for obj in free %}
+        <tr>
+            <td>{{obj.apphour}}</td>
+            <td>{{obj.client.first_name}}</td>
+            <td>{{obj.status}}</td>
+            <td>{{obj.procedure}}</td>
+            <td>{{obj.payment}}</td>
+
+            <td>
+                {% if obj.pk %}
+                <a href="{% url 'edit-appointment' obj.pk %}" class="btn btn-warning btn-sm">Editar</a>
+                <a href="{% url 'delete-appointment' obj.pk %}" class="btn btn-danger btn-sm">Excluir</a>
+                {%else%}
+                <a href="" class="btn btn-warning btn-sm">Editar</a>
+                <a href="" class="btn btn-danger btn-sm">Excluir</a>
+                {% endif%}
+            </td>
+
+        </tr>
+
+        {% empty %}
+        <tr>
+            <td colspan="3">
+                Nenhum Registro encontrado
+            </td>
+        </tr>
+        {% endfor %}
+
+    </table>
+</div>
+{% endblock %}
+
+
