@@ -11,6 +11,12 @@ class Time:
         dates = datetime(int(dates[2]),int(dates[1]),int(dates[0]))
         return (dates.weekday())
 
+
+    def convertdate(self,dates):
+        dates = dates.split("-")
+        return "{}/{}/{}".format(dates[2],dates[1],dates[0])
+    
+
     def convertehora(self, hora):
         return  (timedelta(hours=int(hora[0:2]), minutes=int(hora[3:])))
 
@@ -60,3 +66,5 @@ class Users:
         pass
 
 
+amanha = datetime.today() + timedelta(hours = 24)
+print(amanha)

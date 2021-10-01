@@ -8,11 +8,15 @@
 <div class="row ml-auto">
     <div class="col-sm">
         <form method="get" class="form-inline my-2 my-lg-0 mt-2" action="">
-            <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search" id="search"
-                name="search" autofocus>
-            <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
+            <input class="form-control mr-sm-2" type="date" aria-label="date" name="date" value={{date}} autofocus>
+            <button class="btn btn-outline-success my-2 my-sm-0 btn-sm" type="submit">Procurar </button>
         </form>
     </div>
+    <!-- <div class="col-sm">
+        <form method="get" class="form-inline my-2 my-lg-0 mt-2" action="">
+            <button class="btn btn-outline-success my-2 my-sm-0 btn-sm" value="2022-01-01" name="date" type="submit">Procurar </button>
+        </form>
+    </div> -->
     <div class="col-sm px-2">
         <a href="{% url 'create-appointment' %}" class="btn btn-success">Inserir</a>
     </div>
@@ -21,7 +25,7 @@
     {% for item in feriados%}
     <div class="alert alert-danger ml-4" role="alert">
         {{item}}
-      </div>
+    </div>
     {% endfor %}
 </div>
 <div class="table-responsive">
@@ -58,7 +62,7 @@
         {% empty %}
         <tr>
             <td colspan="3">
-                Nenhum Registro encontrado
+                Olá, você não possuí cadastro de <a href="{% url 'list-schedule' %}">HORÁRIOS</a> adicione para completar sua agenda
             </td>
         </tr>
         {% endfor %}
@@ -66,5 +70,3 @@
     </table>
 </div>
 {% endblock %}
-
-

@@ -18,19 +18,25 @@ def MySchedule(request):
         'feriados':{},
         'free':{},
     }
+    if (request.GET.get('date')):
+        data['date'] = request.GET.get('date')
+        date = Time().convertdate(request.GET.get('date'))
+    else:
+        data['date'] = datetime.today().strftime('%Y-%m-%d')
+        date = datetime.today().strftime('%d/%m/%Y')
     schedule = []
     busy = []
     free = []
-    weekday = Time().convertweekday('30/09/2021')
+    weekday = Time().convertweekday(date)
 
     try:
-        #dayoff = DayOff.objects.filter(daydate = request.data['date']).filter(professional=request.user.id)
-        data['feriados'] = DayOff.objects.filter(daydate = '30/09/2021').filter(professional=request.user.id)
+        data['feriados'] = DayOff.objects.filter(daydate = date).filter(professional=request.user.id)
         schedule = Schedule.objects.filter(professional=request.user.id).filter(weekday=weekday)
-        busy = Appointment.objects.filter(professional=request.user.id).filter(appdate = '30/09/2021')
+        busy = Appointment.objects.filter(professional=request.user.id).filter(appdate = date)
     except:
         pass
-    
+
+
     if len(data['feriados']) >= 1 and request.user.is_staff==False:
             return render(request, 'registrations/lists/myschedule.html',data)
             
@@ -41,7 +47,7 @@ def MySchedule(request):
     for i in free:
         app = Appointment()
         app.apphour = i
-        app.appdate = '30/09/2021'
+        app.appdate = date
         app.professional = request.user
         busyclient.append(app)
     busy += busyclient
@@ -101,8 +107,7 @@ class DayOffCreate(CreateView):
     template_name = 'registrations/forms.html'
     success_url = reverse_lazy('list-dayoff')
 
- 
-#############################  UPDATE  #############################
+ #############################  UPDATE  #############################
 
 class ProcedureUpdate(UpdateView):
     #login_url = reverse_lazy('')
