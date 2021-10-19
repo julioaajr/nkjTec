@@ -66,5 +66,3 @@ class Users:
         pass
 
 
-amanha = datetime.today() + timedelta(hours = 24)
-print(amanha)

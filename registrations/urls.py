@@ -5,7 +5,8 @@ from .views import *
 
 urlpatterns =[
     #Views gerais
-    path('myschedule', MySchedule, name ='myschedule'),
+    path('myschedule/', MySchedule, name ='myschedule'),
+    path('fullschedule/', FullSchedule, name ='fullschedule'),
     #cadastrar
     path('reg/procedure/', ProcedureCreate.as_view(), name ='create-procedure'),
     path('reg/status/', StatusCreate.as_view(), name ='create-status'),

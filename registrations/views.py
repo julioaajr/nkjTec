@@ -13,7 +13,51 @@ from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMix
 ############################## VIEWS GERAIS ##############################
 
 
-def MySchedule(request):
+def FullSchedule(request):
+    data = {
+        'feriados':{},
+        'free':{},
+    }
+    if (request.GET.get('date')):
+        data['date'] = request.GET.get('date')
+        date = Time().convertdate(request.GET.get('date'))
+    else:
+        data['date'] = datetime.today().strftime('%Y-%m-%d')
+        date = datetime.today().strftime('%d/%m/%Y')
+    schedule = []
+    busy = []
+    free = []
+    weekday = Time().convertweekday(date)
+
+    try:
+        data['feriados'] = DayOff.objects.filter(daydate = date).filter(professional=request.user.id)
+        schedule = Schedule.objects.filter(professional=request.user.id).filter(weekday=weekday)
+        busy = Appointment.objects.filter(professional=request.user.id).filter(appdate = date)
+    except:
+        pass
+
+
+    if len(data['feriados']) >= 1 and request.user.is_staff==False:
+            return render(request, 'registrations/lists/myschedule.html',data)
+            
+    busy = list(busy)
+    busyclient = []
+    for i in schedule:
+        free += Time().FreeSchedule(i,busy)
+    for i in free:
+        app = Appointment()
+        app.apphour = i
+        app.appdate = date
+        app.professional = request.user
+        busyclient.append(app)
+    busy += busyclient
+    busy = sorted(busy,key = lambda x: x.apphour)
+    data['free']=busy
+    return render(request, 'registrations/lists/myschedule.html',data)
+
+
+
+def MySchedule(request): #VIEW ONDE BUSCA OS HORÁRIOS DO PROFISSIONAL LOGADO.
     data = {
         'feriados':{},
         'free':{},

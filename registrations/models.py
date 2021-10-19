@@ -10,6 +10,7 @@ class Procedure(models.Model):
     active = models.BooleanField(default=True, verbose_name="Ativo")
     time = models.IntegerField(blank=True, null=True, verbose_name="Tempo")
     price = models.FloatField(blank=True, null=True,default= 0, verbose_name="Preço")
+    
 
     # DESCRICAO
     def __str__(self):
@@ -74,7 +75,6 @@ class Appointment(models.Model):
 
 class Schedule(models.Model):
     WEEKDAY = (
-
         ('0', 'Segunda-feira'),
         ('1', 'Terça-feira'),
         ('2', 'Quarta-feira'),

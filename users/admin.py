@@ -13,8 +13,8 @@ class UserAdmin(auth_admin.UserAdmin):
     add_form = UserCreationForm
     model = User
     # tirar comentário e colocar os nomes dos campos adicionais
-    """fieldsets = auth_admin.UserAdmin.fieldsets + (
-        ("Campos Extras!", {"fields":("is_cnpj",)}),
-    )"""
+    fieldsets = auth_admin.UserAdmin.fieldsets + (
+        ("Campos Extras!", {"fields":('master','client','professional',)}),
+    )
 
 # admin.site.register()
