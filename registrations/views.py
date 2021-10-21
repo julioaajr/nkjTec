@@ -12,12 +12,18 @@ from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMix
 
 ############################## VIEWS GERAIS ##############################
 
-
 def FullSchedule(request):
+    data={}
+    pass
+    return render(request, 'registrations/lists/myschedule.html',data)
+
+def FullScheduleMaster(request, master):
     data = {
         'feriados':{},
         'free':{},
     }
+
+    print(master)
     if (request.GET.get('date')):
         data['date'] = request.GET.get('date')
         date = Time().convertdate(request.GET.get('date'))

@@ -7,6 +7,7 @@ urlpatterns =[
     #Views gerais
     path('myschedule/', MySchedule, name ='myschedule'),
     path('fullschedule/', FullSchedule, name ='fullschedule'),
+    path('fullschedule/<str:master>/', FullScheduleMaster, name ='fullschedule-master'),
     #cadastrar
     path('reg/procedure/', ProcedureCreate.as_view(), name ='create-procedure'),
     path('reg/status/', StatusCreate.as_view(), name ='create-status'),
