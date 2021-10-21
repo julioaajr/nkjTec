@@ -20,12 +20,8 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/3.2/howto/deployment/checklist/
 
-DEBUG=True
-SECRET_KEY='django-insecure-2#o$5z3aa%gsqlef%ybd_q44gzw%ot6yps1er2lc6h+&0bkifk'
-
-
-#DEBUG = config('DEBUG', cast=bool, default=False)
-#SECRET_KEY = config('SECRET_KEY')
+DEBUG = config('DEBUG', cast=bool, default=False)
+SECRET_KEY = config('SECRET_KEY')
 
 ALLOWED_HOSTS = ['nkjtecNEWdev.eba-m92yxtqr.us-west-2.elasticbeanstalk.com']
 
