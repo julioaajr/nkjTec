@@ -23,7 +23,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 DEBUG = config('DEBUG', cast=bool, default=False)
 SECRET_KEY = config('SECRET_KEY')
 
-ALLOWED_HOSTS = ['nkjtecNEWdev.eba-m92yxtqr.us-west-2.elasticbeanstalk.com']
+ALLOWED_HOSTS = ['*']
 
 
 # Application definition
