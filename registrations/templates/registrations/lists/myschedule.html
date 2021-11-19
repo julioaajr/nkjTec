@@ -3,7 +3,7 @@
 
 {% block content %}
 
-<h3>Agendamentos</h3>
+<h3>Agendamentos  {{datec}}</h3>
 <hr>
 <div class="row ml-auto">
     <div class="col-sm">
@@ -18,7 +18,7 @@
         </form>
     </div> -->
     <div class="col-sm px-2">
-        <a href="{% url 'create-appointment' %}" class="btn btn-success">Inserir</a>
+        <a href="{% url 'create-appointment' %}" class="btn btn-success">Encaixe</a>
     </div>
 </div>
 <div class="row pt-2 pb-auto">
@@ -29,31 +29,41 @@
     {% endfor %}
 </div>
 <div class="table-responsive">
-    <table class="table table-striped">
+    <table class="table table-striped table-sm">
         <tr>
             <th>Horário</th>
             <th>Cliente</th>
             <th>Status</th>
             <th>Procedimento</th>
-            <th>Pagamento</th>
+            <th>Pago</th>
             <th>Opções</th>
         </tr>
 
         {% for obj in free %}
         <tr>
             <td>{{obj.apphour}}</td>
-            <td>{{obj.client.first_name}}</td>
+
+            <td>
+                {% if obj.pk %}
+                    {{obj.client.first_name}}
+                {%else%}
+                    <a href="{% url 'create-appointment' %}" data ={{date}} class="btn btn-success btn-sm">Inserir</a>
+                {% endif%}
+            </td>
             <td>{{obj.status}}</td>
             <td>{{obj.procedure}}</td>
-            <td>{{obj.payment}}</td>
+            
+            {% if obj.payed %}
+                <td>Pago</td>
+            {%else%}
+                <td> Não Pago</td>
+            {%endif%}
 
             <td>
                 {% if obj.pk %}
                 <a href="{% url 'edit-appointment' obj.pk %}" class="btn btn-warning btn-sm">Editar</a>
                 <a href="{% url 'delete-appointment' obj.pk %}" class="btn btn-danger btn-sm">Excluir</a>
                 {%else%}
-                <a href="" class="btn btn-warning btn-sm">Editar</a>
-                <a href="" class="btn btn-danger btn-sm">Excluir</a>
                 {% endif%}
             </td>
 

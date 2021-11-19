@@ -14,7 +14,7 @@ class UserAdmin(auth_admin.UserAdmin):
     model = User
     # tirar comentário e colocar os nomes dos campos adicionais
     fieldsets = auth_admin.UserAdmin.fieldsets + (
-        ("Campos Extras!", {"fields":('master','client','professional',)}),
+        ("Campos Extras!", {"fields":('master','client','professional','tel',)}),
     )
 
 # admin.site.register()

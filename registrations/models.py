@@ -59,6 +59,7 @@ class Appointment(models.Model):
     status = models.ForeignKey(Status, models.DO_NOTHING, verbose_name="Status")
     procedure = models.ForeignKey(Procedure, models.DO_NOTHING, verbose_name="Procedimento")
     payment = models.ForeignKey(Payment, models.DO_NOTHING,null=True,blank=True, verbose_name="Pagamento")
+    payed = models.BooleanField(default=False, verbose_name="Pago")
     appdate = models.CharField(max_length=10, verbose_name="Data")#format dd/mm/yyyy
     apphour = models.CharField(max_length=5, verbose_name="Horário")#format hh:mm
     total = models.IntegerField(blank = True, null = True, verbose_name="Total")
@@ -66,7 +67,8 @@ class Appointment(models.Model):
     created_at = models.DateTimeField(auto_now=True, verbose_name="Criado em")
     def __str__(self):
         #return "{} - Cliente: {}".format(self.apphour,self.client)
-        return " {} ".format(self.apphour)
+        return (f"Nome: {self.client} | Data: {self.appdate} | Horário: {self.apphour}")
+        #return " {} ".format(self.apphour)
 
     def get_apphour(self):
         return self.__apphour
@@ -101,4 +103,4 @@ class DayOff (models.Model):
     active = models.BooleanField(default=True, verbose_name="Ativo")
     created_at = models.DateTimeField(auto_now=True, verbose_name="Criado em.")
     def __str__(self):
-        return " Feriado {}  {}".format (self.daydate,self.reason)
+        return f" DATA: {self.daydate} | MOTIVO: {self.reason}"

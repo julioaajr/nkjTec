@@ -74,6 +74,7 @@ def MySchedule(request): #VIEW ONDE BUSCA OS HORÁRIOS DO PROFISSIONAL LOGADO.
     else:
         data['date'] = datetime.today().strftime('%Y-%m-%d')
         date = datetime.today().strftime('%d/%m/%Y')
+    data['datec'] = date
     schedule = []
     busy = []
     free = []
@@ -137,7 +138,7 @@ class PaymentCreate(CreateView):
 class AppointmentCreate(CreateView):
     #login_url = reverse_lazy('')
     model = Appointment
-    fields = ['appdate','apphour','client','professional','status','procedure','payment' ]
+    fields = ['appdate','apphour','client','professional','status','procedure','payed' ]
     template_name = 'registrations/forms.html'
     success_url = reverse_lazy('myschedule')
 
@@ -294,7 +295,7 @@ class DayOffList(ListView):
     template_name = 'registrations/lists/dayoff.html'
     def get_queryset(self):
         if (self.request.GET.get('search')):
-            self.object_list = DayOff.objects.filter(reason__contains = self.request.GET.get('search'))
+            self.object_list = DayOff.objects.filter(reason__icontains = self.request.GET.get('search'))
         else:
             self.object_list = DayOff.objects.all()
         return self.object_list
