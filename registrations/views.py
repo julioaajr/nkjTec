@@ -158,6 +158,13 @@ class DayOffCreate(CreateView):
     template_name = 'registrations/forms.html'
     success_url = reverse_lazy('list-dayoff')
 
+class UserCreate(CreateView):
+    #login_url = reverse_lazy('')
+    model = User
+    fields = ['first_name','username','email','tel','professional']
+    template_name = 'registrations/forms.html'
+    success_url = reverse_lazy('list-user')
+
  #############################  UPDATE  #############################
 
 class ProcedureUpdate(UpdateView):
@@ -206,6 +213,13 @@ class DayOffUpdate(UpdateView):
     fields = ['professional', 'daydate', 'reason','active']
     template_name = 'registrations/forms.html'
     success_url = reverse_lazy('list-dayoff')
+
+class UserUpdate(UpdateView):
+    #login_url = reverse_lazy('')
+    model = User
+    fields = ['first_name','username','email','tel','professional']
+    template_name = 'registrations/forms.html'
+    success_url = reverse_lazy('list-user')
 
 
 #############################  DELETE  #############################
@@ -257,6 +271,12 @@ class DayOffDelete(DeleteView):
     template_name = 'registrations/delete-forms.html'
     success_url = reverse_lazy('list-dayoff')
 
+class UserDelete(DeleteView):
+    #login_url = reverse_lazy('')
+    model = User
+    fields = []
+    template_name = 'registrations/delete-forms.html'
+    success_url = reverse_lazy('list-user')
 
 #############################  LIST  #############################
 class ProcedureList(ListView):
@@ -287,7 +307,6 @@ class ScheduleList(ListView):
     #login_url = reverse_lazy('login')
     model = Schedule
     template_name = 'registrations/lists/schedule.html'
-    
 
 class DayOffList(ListView):
     #login_url = reverse_lazy('login')
@@ -300,6 +319,11 @@ class DayOffList(ListView):
             self.object_list = DayOff.objects.all()
         return self.object_list
 
+    
+class UserList(ListView):
+    #login_url = reverse_lazy('login')
+    model = User
+    template_name = 'registrations/lists/users.html'
 
 
 

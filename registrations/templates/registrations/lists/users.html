@@ -1,0 +1,66 @@
+{% extends 'pages/template.html' %}
+{% load static %}
+
+{% block content %}
+
+
+<h3>Feriado</h3>
+<hr>
+<div class="row ml-auto">
+    <div class="col-sm">
+        <form method="get" class="form-inline my-2 my-lg-0 mt-2" action="">
+            <input class="form-control mr-sm-2" type="search" value="{{request.GET.search}}" placeholder="Search" aria-label="Search" id="search"
+                name="search" autofocus>
+            <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
+            <a href="{% url 'list-user' %}" class="btn">Limpar</a>
+        </form>
+    </div>
+    <div class="col-sm">
+        <a href="{% url 'create-user' %}" class="btn btn-success ml-5">Inserir</a>
+    </div>
+</div>
+
+<hr>
+<div class="table-responsive">
+    <table class="table table-striped table-sm">
+        <tr>
+            <th>first_name</th>
+            <th>username</th>
+            <th>email</th>
+            <th>tel</th>
+            <th>professional</th>
+            <th>Opções</th>
+        </tr>
+
+        {% for obj in object_list %}
+        <tr>
+            <td>{{obj.first_name}}</td>
+            <td>{{obj.username}}</td>
+            <td>{{obj.email}}</td>
+            <td>{{obj.tel}}</td>
+            {%if obj.professional%}
+            <td>Sim</td>
+            {%else%}
+            <td>Não</td>
+            {%endif%}
+            
+
+            <td>
+                <a href="{% url 'edit-user' obj.pk %}" class="btn btn-warning btn-sm">Editar</a>
+                <a href="{% url 'delete-user' obj.pk %}" class="btn btn-danger btn-sm">Excluir</a>
+            </td>
+
+        </tr>
+
+        {% empty %}
+        <tr>
+            <td colspan="3">
+                Nenhum Registro encontrado
+            </td>
+        </tr>
+        {% endfor %}
+
+    </table>
+</div>
+
+{% endblock %}

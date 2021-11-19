@@ -66,9 +66,8 @@ class Appointment(models.Model):
     active = models.BooleanField(default=True, verbose_name="Ativo")
     created_at = models.DateTimeField(auto_now=True, verbose_name="Criado em")
     def __str__(self):
-        #return "{} - Cliente: {}".format(self.apphour,self.client)
         return (f"Nome: {self.client} | Data: {self.appdate} | Horário: {self.apphour}")
-        #return " {} ".format(self.apphour)
+
 
     def get_apphour(self):
         return self.__apphour
