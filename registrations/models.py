@@ -53,10 +53,20 @@ class BugBounty(models.Model):
         return self.name
 
 class Appointment(models.Model):
+    STATUS = (
+        ('0', 'Não Confirmado'),
+        ('1', 'Confirmado'),
+        ('2', 'Esperando'),
+        ('3', 'Em Atendimento'),
+        ('4', 'Atendido'),
+        ('5', 'Faltou'),
+        ('6', 'Cancelado'),
+        ('7', 'Remarcado'),
+    ) #0 = monday
     #['client','professional','status','procedure','payment' ]
     client = models.ForeignKey(User, models.DO_NOTHING, related_name="clientss", verbose_name="Cliente")
     professional = models.ForeignKey(User, models.DO_NOTHING, related_name="professionalss", verbose_name="Profissional")
-    status = models.ForeignKey(Status, models.DO_NOTHING, verbose_name="Status")
+    status = models.CharField(max_length=1, choices=STATUS,default=0, verbose_name="Status do Agendamento")
     procedure = models.ForeignKey(Procedure, models.DO_NOTHING, verbose_name="Procedimento")
     payment = models.ForeignKey(Payment, models.DO_NOTHING,null=True,blank=True, verbose_name="Pagamento")
     payed = models.BooleanField(default=False, verbose_name="Pago")

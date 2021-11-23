@@ -100,6 +100,7 @@ def MySchedule(request): #VIEW ONDE BUSCA OS HORÁRIOS DO PROFISSIONAL LOGADO.
         app.apphour = i
         app.appdate = date
         app.professional = request.user
+        app.status = ""
         busyclient.append(app)
     busy += busyclient
     busy = sorted(busy,key = lambda x: x.apphour)

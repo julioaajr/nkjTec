@@ -33,6 +33,7 @@
         <tr>
             <th>Horário</th>
             <th>Cliente</th>
+            <th>Whats</th>
             <th>Status</th>
             <th>Procedimento</th>
             <th>Pago</th>
@@ -50,7 +51,11 @@
                     <a href="{% url 'create-appointment' %}" data ={{date}} class="btn btn-success btn-sm">Inserir</a>
                 {% endif%}
             </td>
-            <td>{{obj.status}}</td>
+            <td><a href="https://api.whatsapp.com/send?phone=55{{obj.client.tel}}
+                &text=Olá temos um Agendamento dia {{obj.appdate}} as {{obj.apphour}} com {{obj.professional.first_name}}" target="_blank">
+                {{obj.client.tel}}</a>
+            </td>
+            <td>{{obj.get_status_display}}</td>
             <td>{{obj.procedure}}</td>
             
             {% if obj.payed %}
