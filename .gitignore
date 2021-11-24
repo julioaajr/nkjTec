@@ -2,7 +2,7 @@
 *.venv
 /.venv
 .idea/
-*.sqlite3
+.sqlite3
 # Elastic Beanstalk Files
 .elasticbeanstalk/*
 !.elasticbeanstalk/*.cfg.yml

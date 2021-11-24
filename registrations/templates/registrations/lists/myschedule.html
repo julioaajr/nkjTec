@@ -3,7 +3,7 @@
 
 {% block content %}
 
-<h3>Agendamentos  {{datec}}</h3>
+<h3>Agendamentos {{datec}}</h3>
 <hr>
 <div class="row ml-auto">
     <div class="col-sm">
@@ -42,27 +42,24 @@
 
         {% for obj in free %}
         <tr>
-        {%if obj.status != '4'%}
+            {%if obj.status != '4'%}
             <td>{{obj.apphour}}</td>
 
             <td>
                 {% if obj.pk %}
-                    {{obj.client.first_name}}
+                {{obj.client.first_name}}
                 {%else%}
-                    <a href="{% url 'create-appointment' %}" data ={{date}} class="btn btn-success btn-sm">Inserir</a>
+                <a href="{% url 'create-appointment' %}" data={{date}} class="btn btn-success btn-sm">Inserir</a>
                 {% endif%}
             </td>
-            <td><a href="https://api.whatsapp.com/send?phone=55{{obj.client.tel}}&text=Olá temos um Agendamento dia {{obj.appdate}} as {{obj.apphour}} com {{obj.professional.first_name}}" target="_blank">
-                {{obj.client.tel}}</a>
+            <td><a href="https://api.whatsapp.com/send?phone=55{{obj.client.tel}}&text=Olá temos um Agendamento dia {{obj.appdate}} as {{obj.apphour}} com {{obj.professional.first_name}}"
+                    target="_blank">
+                    {{obj.client.tel}}</a>
             </td>
             <td>{{obj.get_status_display}}</td>
             <td>{{obj.procedure}}</td>
-            
-            {% if obj.payed %}
-                <td>Pago</td>
-            {%else%}
-                <td> Não Pago</td>
-            {%endif%}
+
+            <td>{{obj.get_payed_display}}</td>
 
             <td>
                 {% if obj.pk %}
@@ -77,7 +74,8 @@
         {% empty %}
         <tr>
             <td colspan="3">
-                Olá, você não possuí cadastro de <a href="{% url 'list-schedule' %}">HORÁRIOS</a> adicione para completar sua agenda
+                Olá, você não possuí cadastro de <a href="{% url 'list-schedule' %}">HORÁRIOS</a> adicione para
+                completar sua agenda
             </td>
         </tr>
         {% endfor %}

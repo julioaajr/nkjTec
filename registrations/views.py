@@ -195,7 +195,7 @@ class PaymentUpdate(UpdateView):
 class AppointmentUpdate(UpdateView):
     #login_url = reverse_lazy('')
     model = Appointment
-    fields =  ['appdate','apphour','client','professional','status','procedure','payment' ]
+    fields =  ['appdate','apphour','client','professional','status','procedure','payed' ]
     template_name = 'registrations/forms.html'
     success_url = reverse_lazy('myschedule')
 
