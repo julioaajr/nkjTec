@@ -37,9 +37,9 @@
         <tr>
             <td>{{obj.appdate}}</td>
             <td>{{obj.apphour}}</td>
-            <td>{{obj.client}}</td>
-            <td>{{obj.professional}}</td>
-            <td>{{obj.status}}</td>
+            <td>{{obj.client.first_name}}</td>
+            <td>{{obj.professional.first_name.split.0}}</td>
+            <td>{{obj.get_status_display}}</td>
             <td>{{obj.procedure}}</td>
             <td>{{obj.payment}}</td>
             <td>{{obj.total}}</td>
