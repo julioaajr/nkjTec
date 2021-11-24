@@ -42,6 +42,7 @@
 
         {% for obj in free %}
         <tr>
+        {%if obj.status != '4'%}
             <td>{{obj.apphour}}</td>
 
             <td>
@@ -51,8 +52,7 @@
                     <a href="{% url 'create-appointment' %}" data ={{date}} class="btn btn-success btn-sm">Inserir</a>
                 {% endif%}
             </td>
-            <td><a href="https://api.whatsapp.com/send?phone=55{{obj.client.tel}}
-                &text=Olá temos um Agendamento dia {{obj.appdate}} as {{obj.apphour}} com {{obj.professional.first_name}}" target="_blank">
+            <td><a href="https://api.whatsapp.com/send?phone=55{{obj.client.tel}}&text=Olá temos um Agendamento dia {{obj.appdate}} as {{obj.apphour}} com {{obj.professional.first_name}}" target="_blank">
                 {{obj.client.tel}}</a>
             </td>
             <td>{{obj.get_status_display}}</td>
@@ -73,7 +73,7 @@
             </td>
 
         </tr>
-
+        {%endif%}
         {% empty %}
         <tr>
             <td colspan="3">
