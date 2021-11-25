@@ -150,6 +150,20 @@ class AppointmentCreate(CreateView):
         # form.fields['b_a'].queryset = A.objects.filter(a_user=self.request.user) 
         return form
 
+'''class StudentCreateView(CreateView):
+    fields = ("name","age","school")
+    model = models.Student
+    template_name = 'basic_app/student_form.html'
+
+    pk_url_kwarg = 'student_pk'
+    slug_url_kwarg='school'
+    def get_initial(self):
+        school = get_object_or_404(models.School, school_pk=self.kwargs.get('school_pk'))
+        return {
+        'school':school,
+    }'''
+
+
 
 class ScheduleCreate(CreateView):
     #login_url = reverse_lazy('')
