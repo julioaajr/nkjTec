@@ -23,3 +23,22 @@
 </div>
 
 {% endblock %}
+
+
+{% block scripts %}
+<script src="{% static 'js/jquery.mask.min.js' %}"></script>
+
+<script>
+    $(document).ready(function () {
+        
+        $("#id_appdate").mask("00/00/0000");
+        $("#id_apphour").mask("00:00");
+        $("#id_tel").mask("(00)0 0000-0000");
+
+    });
+
+
+</script>
+
+
+{% endblock %}

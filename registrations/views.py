@@ -138,10 +138,17 @@ class PaymentCreate(CreateView):
 
 class AppointmentCreate(CreateView):
     #login_url = reverse_lazy('')
+    #fields = '__all__'
     model = Appointment
-    fields = ['appdate','apphour','client','professional','status','procedure','payed' ]
+    fields = ['appdate','apphour','client','professional','procedure','status','payed' ]
     template_name = 'registrations/forms.html'
     success_url = reverse_lazy('myschedule')
+
+    def get_form(self, *args, **kwargs):
+        form = super(AppointmentCreate, self).get_form(*args, **kwargs)
+        form.fields['client'].queryset = User.objects.filter(id=1)
+        # form.fields['b_a'].queryset = A.objects.filter(a_user=self.request.user) 
+        return form
 
 
 class ScheduleCreate(CreateView):
@@ -155,7 +162,8 @@ class ScheduleCreate(CreateView):
 class DayOffCreate(CreateView):
     #login_url = reverse_lazy('')
     model = DayOff
-    fields = ['professional', 'daydate', 'reason','active']
+    #fields = ['professional', 'daydate', 'reason','active']
+    fields = '__all__'
     template_name = 'registrations/forms.html'
     success_url = reverse_lazy('list-dayoff')
 
