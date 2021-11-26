@@ -49,7 +49,12 @@
                 {% if obj.pk %}
                 {{obj.client.first_name}}
                 {%else%}
-                <a href="{% url 'create-appointment' %}" data={{date}} class="btn btn-success btn-sm">Inserir</a>
+                <form method="get" class="form-inline my-2 my-lg-0 mt-2" action="{% url 'create-appointment' %}">
+                    <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search" id="search"
+                        name="search" autofocus>
+                    <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
+                </form>
+                <!--<a href="{% url 'create-appointment' %}" data={{date}} class="btn btn-success btn-sm">Inserir</a>-->
                 {% endif%}
             </td>
             <td><a href="https://api.whatsapp.com/send?phone=55{{obj.client.tel}}&text=Olá temos um Agendamento dia {{obj.appdate}} as {{obj.apphour}} com {{obj.professional.first_name}}"

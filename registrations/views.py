@@ -143,10 +143,14 @@ class AppointmentCreate(CreateView):
     fields = ['appdate','apphour','client','professional','procedure','status','payed' ]
     template_name = 'registrations/forms.html'
     success_url = reverse_lazy('myschedule')
-
+    usuario = User.objects.get(id=1)
+    initial = {
+        'appdate': '',
+    }
+    
     def get_form(self, *args, **kwargs):
         form = super(AppointmentCreate, self).get_form(*args, **kwargs)
-        form.fields['client'].queryset = User.objects.filter(id=1)
+        form.fields['professional'].queryset = User.objects.filter(id = self.request.user.id)
         # form.fields['b_a'].queryset = A.objects.filter(a_user=self.request.user) 
         return form
 
