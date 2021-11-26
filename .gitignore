@@ -5,6 +5,7 @@
 /.sqlite3
 /*.sqlite3
 *.sqlite3
+db.sqlite3
 # Elastic Beanstalk Files
 .elasticbeanstalk/*
 !.elasticbeanstalk/*.cfg.yml
