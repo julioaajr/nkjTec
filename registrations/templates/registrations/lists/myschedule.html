@@ -18,7 +18,7 @@
         </form>
     </div> -->
     <div class="col-sm px-2">
-        <a href="{% url 'create-appointment' %}" class="btn btn-success">Encaixe</a>
+        <a href="{% url 'create-appointment' %}?appdate={{datec}}&professional={{free.1.professional.id}}" class="btn btn-success">Encaixe</a>
     </div>
 </div>
 <div class="row pt-2 pb-auto">
@@ -49,12 +49,10 @@
                 {% if obj.pk %}
                 {{obj.client.first_name}}
                 {%else%}
-                <form method="get" class="form-inline my-2 my-lg-0 mt-2" action="{% url 'create-appointment' %}">
-                    <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search" id="search"
-                        name="search" autofocus>
-                    <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
-                </form>
-                <!--<a href="{% url 'create-appointment' %}" data={{date}} class="btn btn-success btn-sm">Inserir</a>-->
+
+                <a href="{% url 'create-appointment' %}?appdate={{obj.appdate}}&apphour={{obj.apphour}}&professional={{obj.professional.id}}" 
+                
+                class="btn btn-success btn-sm">Inserir</a>
                 {% endif%}
             </td>
             <td><a href="https://api.whatsapp.com/send?phone=55{{obj.client.tel}}&text=Olá temos um Agendamento dia {{obj.appdate}} as {{obj.apphour}} com {{obj.professional.first_name}}"

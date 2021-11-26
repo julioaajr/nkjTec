@@ -31,10 +31,27 @@
 <script>
     $(document).ready(function () {
         
+        if ($("#id_appdate").prop('value') != "") {
+            $("#id_appdate").prop("disabled", true);
+        
+        }
+        if ($("#id_apphour").prop('value') != "") {
+                $("#id_apphour").prop("disabled", true);
+            
+        }
+        if ($("#id_professional").prop('value') != "") {
+                $("#id_professional").prop("disabled", true);
+            
+        }
         $("#id_appdate").mask("00/00/0000");
         $("#id_apphour").mask("00:00");
+        $("#id_username").mask("000.000.000-00");
+        $("#id_username").prop("placeholder", "000.000.000-00");
+        document.getElementById("hint_id_username").textContent = "Informe o CPF";
 
     });
+
+
 
 
 </script>

@@ -140,32 +140,29 @@ class AppointmentCreate(CreateView):
     #login_url = reverse_lazy('')
     #fields = '__all__'
     model = Appointment
-    fields = ['appdate','apphour','client','professional','procedure','status','payed' ]
+    fields = ['appdate','apphour','professional','client','procedure','status','payed' ]
     template_name = 'registrations/forms.html'
     success_url = reverse_lazy('myschedule')
     usuario = User.objects.get(id=1)
-    initial = {
-        'appdate': '',
-    }
-    
+
+    def get_initial(self):
+        professional = User()
+        try:
+            professional =  User.objects.get(id=self.request.GET.get('professional'))
+        except:
+            None
+        return {
+            'appdate':self.request.GET.get('appdate'),
+            'apphour':self.request.GET.get('apphour'),
+            'professional':professional,
+        }   
     def get_form(self, *args, **kwargs):
         form = super(AppointmentCreate, self).get_form(*args, **kwargs)
-        form.fields['professional'].queryset = User.objects.filter(id = self.request.user.id)
+        form.fields['professional'].queryset = User.objects.filter(professional = True)
         # form.fields['b_a'].queryset = A.objects.filter(a_user=self.request.user) 
         return form
+    
 
-'''class StudentCreateView(CreateView):
-    fields = ("name","age","school")
-    model = models.Student
-    template_name = 'basic_app/student_form.html'
-
-    pk_url_kwarg = 'student_pk'
-    slug_url_kwarg='school'
-    def get_initial(self):
-        school = get_object_or_404(models.School, school_pk=self.kwargs.get('school_pk'))
-        return {
-        'school':school,
-    }'''
 
 
 
@@ -177,6 +174,13 @@ class ScheduleCreate(CreateView):
     success_url = reverse_lazy('list-schedule')
 
 
+    def get_form(self, *args, **kwargs):
+        form = super(ScheduleCreate, self).get_form(*args, **kwargs)
+        form.fields['professional'].queryset = User.objects.filter(professional = True)
+        # form.fields['b_a'].queryset = A.objects.filter(a_user=self.request.user) 
+        return form
+
+
 class DayOffCreate(CreateView):
     #login_url = reverse_lazy('')
     model = DayOff
@@ -185,12 +189,23 @@ class DayOffCreate(CreateView):
     template_name = 'registrations/forms.html'
     success_url = reverse_lazy('list-dayoff')
 
+    def get_form(self, *args, **kwargs):
+        form = super(DayOffCreate, self).get_form(*args, **kwargs)
+        form.fields['professional'].queryset = User.objects.filter(professional = True)
+        # form.fields['b_a'].queryset = A.objects.filter(a_user=self.request.user) 
+        return form
+
 class UserCreate(CreateView):
     #login_url = reverse_lazy('')
     model = User
     fields = ['first_name','username','email','tel','professional']
     template_name = 'registrations/forms.html'
     success_url = reverse_lazy('list-user')
+
+    def get_initial(self):
+        return {
+            "hint_id_username": "",
+        }  
 
  #############################  UPDATE  #############################
 
