@@ -18,7 +18,7 @@
         </form>
     </div> -->
     <div class="col-sm px-2">
-        <a href="{% url 'create-appointment' %}?appdate={{datec}}&professional={{free.1.professional.id}}&client=" class="btn btn-success">Encaixe</a>
+        <a href="{% url 'create-appointment' %}?appdate={{datec}}&professional={{free.1.professional.id}}" class="btn btn-success">Encaixe</a>
     </div>
 </div>
 <div class="row pt-2 pb-auto">
@@ -34,14 +34,12 @@
             <th>Horário</th>
             <th>Cliente</th>
             <th>Whats</th>
-            <th>Status</th>
-            <th>Procedimento</th>
-            <th>Pago</th>
+
             <th>Opções</th>
         </tr>
 
         {% for obj in free %}
-        <tr>
+        <tr title="{{obj.client.first_name}} | {{obj.procedure}}">
             {%if obj.status != '4'%}
             <td>{{obj.apphour}}</td>
 
@@ -59,10 +57,6 @@
                     target="_blank">
                     {{obj.client.tel}}</a>
             </td>
-            <td>{{obj.get_status_display}}</td>
-            <td>{{obj.procedure}}</td>
-
-            <td>{{obj.get_payed_display}}</td>
 
             <td>
                 {% if obj.pk %}

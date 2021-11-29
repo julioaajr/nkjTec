@@ -16,74 +16,76 @@
 </head>
 
 <body class="bg-light">
-    <nav class="navbar navbar-expand-lg navbar-dark bg-dark mb-3  fixed-top">
-        <a class="navbar-brand" href="/">NkTec</a>
-        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
-            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-            <span class="navbar-toggler-icon"></span>
-        </button>
+    <div class="bg-light container-fluid">
+        <nav class="navbar navbar-expand-lg navbar-dark bg-dark mb-3  fixed-top sm container-fluid p-1">
+            <a class="navbar-brand" href="/">NkTec</a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
+                aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
 
-        <div class="collapse navbar-collapse" id="navbarSupportedContent">
-            {% if request.user.is_authenticated %}
-            <ul class="navbar-nav">
-                <li class="nav-item">
-                    <a class="nav-link" href="{% url 'myschedule' %}">Minha Agenda</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="{% url 'fullschedule' %}">Todas as Agendas</a>
-                </li>
-                <li class="nav-item dropdown">
-                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button"
-                        data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                        Cadastros
-                    </a>
-                    <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                        <a class="dropdown-item" href="{% url 'list-user' %}">Usuarios/Clientes</a>
-                        <a class="dropdown-item" href="{% url 'list-procedure' %}">Procedimento</a>
-                        <a class="dropdown-item" href="{% url 'list-status' %}">Status</a>
-                        <a class="dropdown-item" href="{% url 'list-payment' %}">Forma de pagamento</a>
-                        <a class="dropdown-item" href="{% url 'list-schedule' %}">Horários</a>
-                        <a class="dropdown-item" href="{% url 'list-dayoff' %}">Feriados</a>
-                        <div class="dropdown-divider"></div>
-                        <a class="dropdown-item" href="{% url 'list-appointment' %}">Agendamento</a>
-                    </div>
-                </li>
-            </ul>
-            {% endif %}
-            <div class="ml-auto">
+            <div class="collapse navbar-collapse" id="navbarSupportedContent">
                 {% if request.user.is_authenticated %}
-                <a class="btn btn-outline-light" href="{% url 'logout'%}">Sair</a>
-                {% else %}
-                <a class="btn btn-outline-light" href="{% url 'login'%}">Entrar</a>
+                <ul class="navbar-nav">
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'myschedule' %}">Minha Agenda</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'fullschedule' %}">Todas as Agendas</a>
+                    </li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button"
+                            data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            Cadastros
+                        </a>
+                        <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                            <a class="dropdown-item" href="{% url 'list-user' %}">Usuarios/Clientes</a>
+                            <a class="dropdown-item" href="{% url 'list-procedure' %}">Procedimento</a>
+                            <a class="dropdown-item" href="{% url 'list-status' %}">Status</a>
+                            <a class="dropdown-item" href="{% url 'list-payment' %}">Forma de pagamento</a>
+                            <a class="dropdown-item" href="{% url 'list-schedule' %}">Horários</a>
+                            <a class="dropdown-item" href="{% url 'list-dayoff' %}">Feriados</a>
+                            <div class="dropdown-divider"></div>
+                            <a class="dropdown-item" href="{% url 'list-appointment' %}">Agendamento</a>
+                        </div>
+                    </li>
+                </ul>
                 {% endif %}
+                <div class="ml-auto">
+                    {% if request.user.is_authenticated %}
+                    <a class="btn btn-outline-light btn-sm" href="">Perfil {{request.user.first_name.split.0}}</a>
+                    <a class="btn btn-outline-light btn-sm" href="{% url 'logout'%}">Sair</a>
+                    {% else %}
+                    <a class="btn btn-outline-light btn-sm" href="{% url 'login'%}">Entrar</a>
+                    {% endif %}
+                </div>
+
             </div>
+        </nav>
+        <hr>
+        <hr>
+        {% block loginform %}
+        {% endblock loginform %}
 
-        </div>
-    </nav>
-    <hr>
-    <hr>
-    <hr>
-    {% block loginform %}
-    {% endblock loginform %}
+        {% block content%}
+        {% endblock %}
 
-    {% block content%}
-    {% endblock %}
+        <!-- Optional JavaScript -->
+        <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+        <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js"
+            integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n"
+            crossorigin="anonymous"></script>
+        <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"
+            integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo"
+            crossorigin="anonymous"></script>
+        <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"
+            integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6"
+            crossorigin="anonymous"></script>
+        <script src="https://unpkg.com/bootstrap-table@1.16.0/dist/bootstrap-table.min.js"></script>
 
-    <!-- Optional JavaScript -->
-    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
-    <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js"
-        integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n"
-        crossorigin="anonymous"></script>
-    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"
-        integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo"
-        crossorigin="anonymous"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"
-        integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6"
-        crossorigin="anonymous"></script>
-    <script src="https://unpkg.com/bootstrap-table@1.16.0/dist/bootstrap-table.min.js"></script>
-
-    {% block scripts%}
-    {% endblock %}
+        {% block scripts%}
+        {% endblock %}
+    </div>
 </body>
 
 </html>

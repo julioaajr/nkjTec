@@ -13,23 +13,17 @@ from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMix
 ############################## VIEWS GERAIS ##############################
 
 def FullSchedule(request):
-    data={}
-    pass
-    return render(request, 'registrations/lists/myschedule.html',data)
-
-def FullScheduleMaster(request, master):
     data = {
         'feriados':{},
         'free':{},
     }
-
-    print(master)
     if (request.GET.get('date')):
         data['date'] = request.GET.get('date')
         date = Time().convertdate(request.GET.get('date'))
     else:
         data['date'] = datetime.today().strftime('%Y-%m-%d')
         date = datetime.today().strftime('%d/%m/%Y')
+    data['datec'] = date
     schedule = []
     busy = []
     free = []
@@ -55,11 +49,57 @@ def FullScheduleMaster(request, master):
         app.apphour = i
         app.appdate = date
         app.professional = request.user
+        app.status = ""
         busyclient.append(app)
     busy += busyclient
     busy = sorted(busy,key = lambda x: x.apphour)
     data['free']=busy
     return render(request, 'registrations/lists/myschedule.html',data)
+
+def FullScheduleMaster(request, master):
+    print (master)
+    data = {
+        'feriados':{},
+        'free':{},
+    }
+    if (request.GET.get('date')):
+        data['date'] = request.GET.get('date')
+        date = Time().convertdate(request.GET.get('date'))
+    else:
+        data['date'] = datetime.today().strftime('%Y-%m-%d')
+        date = datetime.today().strftime('%d/%m/%Y')
+    data['datec'] = date
+    schedule = []
+    busy = []
+    free = []
+    weekday = Time().convertweekday(date)
+
+    try:
+        data['feriados'] = DayOff.objects.filter(daydate = date).filter(professional=request.user.id)
+        schedule = Schedule.objects.filter(professional=request.user.id).filter(weekday=weekday)
+        busy = Appointment.objects.filter(professional=request.user.id).filter(appdate = date)
+    except:
+        pass
+
+
+    if len(data['feriados']) >= 1 and request.user.is_staff==False:
+            return render(request, 'registrations/lists/fullschedulemaster.html',data)
+            
+    busy = list(busy)
+    busyclient = []
+    for i in schedule:
+        free += Time().FreeSchedule(i,busy)
+    for i in free:
+        app = Appointment()
+        app.apphour = i
+        app.appdate = date
+        app.professional = request.user
+        app.status = ""
+        busyclient.append(app)
+    busy += busyclient
+    busy = sorted(busy,key = lambda x: x.apphour)
+    data['free']=busy
+    return render(request, 'registrations/lists/fullschedulemaster.html',data)
 
 
 
@@ -141,21 +181,24 @@ class AppointmentCreate(CreateView):
     #fields = '__all__'
     model = Appointment
     fields = ['appdate','apphour','professional','client','procedure','status','payed' ]
-    template_name = 'registrations/forms.html'
+    template_name = 'registrations/forms_appointment.html'
     success_url = reverse_lazy('myschedule')
     usuario = User.objects.get(id=1)
 
     def get_initial(self):
         professional = User()
         try:
+            client =  User.objects.get(id=self.request.GET.get('client'))
             professional =  User.objects.get(id=self.request.GET.get('professional'))
         except:
             None
         return {
             'appdate':self.request.GET.get('appdate'),
             'apphour':self.request.GET.get('apphour'),
+            'client':client,
             'professional':professional,
-        }   
+        }
+
     def get_form(self, *args, **kwargs):
         form = super(AppointmentCreate, self).get_form(*args, **kwargs)
         form.fields['professional'].queryset = User.objects.filter(professional = True)
@@ -237,7 +280,7 @@ class AppointmentUpdate(UpdateView):
     #login_url = reverse_lazy('')
     model = Appointment
     fields =  ['appdate','apphour','client','professional','status','procedure','payed' ]
-    template_name = 'registrations/forms.html'
+    template_name = 'registrations/forms_appointment.html'
     success_url = reverse_lazy('myschedule')
 
 

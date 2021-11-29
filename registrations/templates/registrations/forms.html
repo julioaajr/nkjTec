@@ -2,6 +2,7 @@
 {% load static %}
 {% load crispy_forms_tags %}
 
+
 {% block title %}
 <title>Cadastro</title>
 {% endblock %}
@@ -13,11 +14,11 @@
     <h3>Cadastro</h3>
     <p class="lead"> Preencha todos os campos</p>
     <hr>
-    <form action="" method="post">
-        {% csrf_token %}
+    <form action="" method="post">{% csrf_token %}
+        {{appdate}}
 
         {{ form|crispy }}
-        <button type="submit" class="btn btn-primary">SALVAR</button>
+        <button type="submit" id="btn_submit" class="btn btn-primary">SALVAR</button>
 
     </form>
 </div>
@@ -30,26 +31,23 @@
 
 <script>
     $(document).ready(function () {
-        
-        if ($("#id_appdate").prop('value') != "") {
-            $("#id_appdate").prop("disabled", true);
-        
-        }
-        if ($("#id_apphour").prop('value') != "") {
-                $("#id_apphour").prop("disabled", true);
-            
-        }
-        if ($("#id_professional").prop('value') != "") {
-                $("#id_professional").prop("disabled", true);
-            
-        }
         $("#id_appdate").mask("00/00/0000");
         $("#id_apphour").mask("00:00");
         $("#id_username").mask("000.000.000-00");
+        $("#id_begin").mask("00:00");
+        $("#id_end").mask("00:00");
+        $("#id_interval").mask("009");
+
         $("#id_username").prop("placeholder", "000.000.000-00");
+        $("#id_begin").prop("placeholder", "exemplo 08:00");
+        $("#id_end").prop("placeholder", "exemplo 18:00");
+        $("#id_interval").prop("placeholder", "exemplo 30");
         document.getElementById("hint_id_username").textContent = "Informe o CPF";
 
     });
+
+
+
 
 
 
