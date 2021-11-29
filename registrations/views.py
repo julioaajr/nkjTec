@@ -187,9 +187,10 @@ class AppointmentCreate(CreateView):
 
     def get_initial(self):
         professional = User()
+        client = User()
         try:
-            client =  User.objects.get(id=self.request.GET.get('client'))
             professional =  User.objects.get(id=self.request.GET.get('professional'))
+            client =  User.objects.get(id=self.request.GET.get('client'))
         except:
             None
         return {
