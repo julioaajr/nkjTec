@@ -10,4 +10,6 @@ class User(AbstractUser):
     professional = models.BooleanField(default=False)
     master = models.ForeignKey('User', blank=True,null=True, on_delete=models.PROTECT)
 
-    
+
+    def __str__(self):
+        return (f"{self.first_name}")

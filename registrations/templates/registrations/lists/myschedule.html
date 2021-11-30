@@ -47,7 +47,7 @@
 
             <td>
                 {% if obj.pk %}
-                {{obj.client.first_name}}
+                {{obj.client.first_name.split.0}}
                 {%else%}
 
                 <a href="{% url 'create-appointment' %}?appdate={{obj.appdate}}&apphour={{obj.apphour}}&professional={{obj.professional.id}}" 

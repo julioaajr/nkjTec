@@ -12,7 +12,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMix
 
 ############################## VIEWS GERAIS ##############################
 
-def FullSchedule(request):
+def AllSchedule(request):
     data = {
         'feriados':{},
         'free':{},
@@ -56,7 +56,7 @@ def FullSchedule(request):
     data['free']=busy
     return render(request, 'registrations/lists/myschedule.html',data)
 
-def FullScheduleMaster(request, master):
+def AllScheduleMaster(request, master):
     print (master)
     data = {
         'feriados':{},
@@ -100,7 +100,6 @@ def FullScheduleMaster(request, master):
     busy = sorted(busy,key = lambda x: x.apphour)
     data['free']=busy
     return render(request, 'registrations/lists/fullschedulemaster.html',data)
-
 
 
 def MySchedule(request): #VIEW ONDE BUSCA OS HORÁRIOS DO PROFISSIONAL LOGADO.

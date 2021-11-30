@@ -58,10 +58,12 @@
 
     botao = document.getElementById("btn_submit");
     botao.onclick = function () {
-        $("#id_professional").prop("disabled", false);
-        $("#id_apphour").prop("disabled", false);
-        $("#id_appdate").prop("disabled", false);
-        $("#id_client").prop("disabled", false);
+        if ($("#id_client").prop('value') != "" && $("#id_procedure").prop('value') != "") {
+            $("#id_professional").prop("disabled", false);
+            $("#id_apphour").prop("disabled", false);
+            $("#id_appdate").prop("disabled", false);
+            $("#id_client").prop("disabled", false);
+        }
     };
 
 

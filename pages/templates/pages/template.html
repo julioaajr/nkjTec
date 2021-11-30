@@ -17,7 +17,7 @@
 
 <body class="bg-light">
     <div class="bg-light container-fluid">
-        <nav class="navbar navbar-expand-lg navbar-dark bg-dark mb-3  fixed-top sm container-fluid p-1">
+        <nav class="navbar navbar-expand-sm navbar-dark bg-dark mb-3  fixed-top sm container-fluid p-1">
             <a class="navbar-brand" href="/">NkTec</a>
             <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
                 aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
@@ -31,7 +31,7 @@
                         <a class="nav-link" href="{% url 'myschedule' %}">Minha Agenda</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="{% url 'fullschedule' %}">Todas as Agendas</a>
+                        <a class="nav-link" href="{% url 'allschedule' %}">Todas as Agendas</a>
                     </li>
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button"
@@ -41,9 +41,7 @@
                         <div class="dropdown-menu" aria-labelledby="navbarDropdown">
                             <a class="dropdown-item" href="{% url 'list-user' %}">Usuarios/Clientes</a>
                             <a class="dropdown-item" href="{% url 'list-procedure' %}">Procedimento</a>
-                            <a class="dropdown-item" href="{% url 'list-status' %}">Status</a>
-                            <a class="dropdown-item" href="{% url 'list-payment' %}">Forma de pagamento</a>
-                            <a class="dropdown-item" href="{% url 'list-schedule' %}">Horários</a>
+                            <a class="dropdown-item" href="{% url 'list-schedule' %}">Horário de Trabalho</a>
                             <a class="dropdown-item" href="{% url 'list-dayoff' %}">Feriados</a>
                             <div class="dropdown-divider"></div>
                             <a class="dropdown-item" href="{% url 'list-appointment' %}">Agendamento</a>

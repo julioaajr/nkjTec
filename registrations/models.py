@@ -6,10 +6,11 @@ from users.models import User
 class Procedure(models.Model):
     # 'procedure_id', 'name', 'active', 'time', 'price'
     procedure_id = models.AutoField(primary_key=True)
-    name = models.CharField(max_length=255, verbose_name="Nome")
+    name = models.CharField(max_length=255, verbose_name="Nome do Procedimento")
     active = models.BooleanField(default=True, verbose_name="Ativo")
-    time = models.IntegerField(blank=True, null=True, verbose_name="Tempo")
-    price = models.FloatField(blank=True, null=True,default= 0, verbose_name="Preço")
+    time = models.IntegerField(blank=True, null=True, verbose_name="Tempo (minutos)")
+    price = models.FloatField(blank=True, null=True,default= 0, verbose_name="Preço R$")
+    master = models.ForeignKey(User, models.DO_NOTHING, blank = True, null = True, verbose_name="Master")
     
 
     # DESCRICAO
