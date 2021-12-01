@@ -1,5 +1,6 @@
 from django.http import request
-from django.shortcuts import render
+from django.http.response import HttpResponseRedirect
+from django.shortcuts import render, get_object_or_404
 from django.views.generic import CreateView
 from django.views.generic.edit import UpdateView, UpdateView, DeleteView
 from django.views.generic.list import ListView
@@ -12,7 +13,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMix
 
 ############################## VIEWS GERAIS ##############################
 
-def AllSchedule(request):
+def AllSchedules(request):
     data = {
         'feriados':{},
         'free':{},
@@ -56,7 +57,7 @@ def AllSchedule(request):
     data['free']=busy
     return render(request, 'registrations/lists/myschedule.html',data)
 
-def AllScheduleMaster(request, master):
+def AllSchedulesMaster(request, master):
     print (master)
     data = {
         'feriados':{},
@@ -154,25 +155,15 @@ def MySchedule(request): #VIEW ONDE BUSCA OS HORÁRIOS DO PROFISSIONAL LOGADO.
 class ProcedureCreate(CreateView):
     #login_url = reverse_lazy('')
     model = Procedure
-    fields = ['name', 'time', 'price','active']
+    fields = ['name', 'time', 'price']
     template_name = 'registrations/forms.html'
     success_url = reverse_lazy('list-procedure')
 
-
-class StatusCreate(CreateView):
-    #login_url = reverse_lazy('')
-    model = Status
-    fields = ['name','active']
-    template_name = 'registrations/forms.html'
-    success_url = reverse_lazy('list-status')
-
-
-class PaymentCreate(CreateView):
-    #login_url = reverse_lazy('')
-    model = Payment
-    fields = ['name', 'discount', 'tax','active']
-    template_name = 'registrations/forms.html'
-    success_url = reverse_lazy('list-payment')
+    def form_valid(self, form):
+        form.instance.created_by = self.request.user
+        form.instance.master = self.request.user.master
+        url = super().form_valid(form)
+        return url
 
 
 class AppointmentCreate(CreateView):
@@ -182,14 +173,13 @@ class AppointmentCreate(CreateView):
     fields = ['appdate','apphour','professional','client','procedure','status','payed' ]
     template_name = 'registrations/forms_appointment.html'
     success_url = reverse_lazy('myschedule')
-    usuario = User.objects.get(id=1)
 
     def get_initial(self):
         professional = User()
-        client = User()
+        client = Client()
         try:
             professional =  User.objects.get(id=self.request.GET.get('professional'))
-            client =  User.objects.get(id=self.request.GET.get('client'))
+            client =  Client.objects.get(id=self.request.GET.get('client'))
         except:
             None
         return {
@@ -201,42 +191,57 @@ class AppointmentCreate(CreateView):
 
     def get_form(self, *args, **kwargs):
         form = super(AppointmentCreate, self).get_form(*args, **kwargs)
-        form.fields['professional'].queryset = User.objects.filter(professional = True)
-        # form.fields['b_a'].queryset = A.objects.filter(a_user=self.request.user) 
+        form.fields['professional'].queryset = User.objects.filter(master = self.request.user.master, professional = True, is_active = 1)
+        form.fields['client'].queryset = Client.objects.filter(master = self.request.user.master, is_active = 1)
+        form.fields['procedure'].queryset = Procedure.objects.filter(master = self.request.user.master, is_active = 1)
         return form
-    
 
-
+    def form_valid(self, form):
+        form.instance.created_by = self.request.user
+        form.instance.master = self.request.user.master
+        url = super().form_valid(form)
+        return url
 
 
 class ScheduleCreate(CreateView):
     #login_url = reverse_lazy('')
     model = Schedule
-    fields = ['professional', 'begin', 'end','interval','weekday','active']
+    fields = ['professional', 'begin', 'end','interval','weekday']
     template_name = 'registrations/forms.html'
     success_url = reverse_lazy('list-schedule')
 
 
     def get_form(self, *args, **kwargs):
         form = super(ScheduleCreate, self).get_form(*args, **kwargs)
-        form.fields['professional'].queryset = User.objects.filter(professional = True)
-        # form.fields['b_a'].queryset = A.objects.filter(a_user=self.request.user) 
+        form.fields['professional'].queryset = User.objects.filter(professional = True, master= self.request.user.master)
         return form
+
+    def form_valid(self, form):
+        form.instance.created_by = self.request.user
+        form.instance.master = self.request.user.master
+        url = super().form_valid(form)
+        return url
 
 
 class DayOffCreate(CreateView):
     #login_url = reverse_lazy('')
     model = DayOff
     #fields = ['professional', 'daydate', 'reason','active']
-    fields = '__all__'
+    fields = ['professional','daydate','reason']
     template_name = 'registrations/forms.html'
     success_url = reverse_lazy('list-dayoff')
 
     def get_form(self, *args, **kwargs):
         form = super(DayOffCreate, self).get_form(*args, **kwargs)
-        form.fields['professional'].queryset = User.objects.filter(professional = True)
-        # form.fields['b_a'].queryset = A.objects.filter(a_user=self.request.user) 
+        form.fields['professional'].queryset = User.objects.filter(professional = True, master= self.request.user.master)
         return form
+
+    def form_valid(self, form):
+        form.instance.created_by = self.request.user
+        form.instance.master = self.request.user.master
+        url = super().form_valid(form)
+        return url
+
 
 class UserCreate(CreateView):
     #login_url = reverse_lazy('')
@@ -248,32 +253,40 @@ class UserCreate(CreateView):
     def get_initial(self):
         return {
             "hint_id_username": "",
-        }  
+        }
+
+    def form_valid(self, form):
+        form.instance.created_by = self.request.user
+        form.instance.master = self.request.user.master
+        url = super().form_valid(form)
+        return url
+
+
+class ClientCreate(CreateView):
+    #login_url = reverse_lazy('')
+    model = Client
+    fields = ['name','tel','birth','cpf','email','obs']
+    template_name = 'registrations/forms.html'
+    success_url = reverse_lazy('list-client')
+
+    def form_valid(self, form):
+        form.instance.created_by = self.request.user
+        form.instance.master = self.request.user.master
+        url = super().form_valid(form)
+        return url
 
  #############################  UPDATE  #############################
 
 class ProcedureUpdate(UpdateView):
     #login_url = reverse_lazy('')
     model = Procedure
-    fields = ['name', 'time', 'price','active']
+    fields = ['name', 'time', 'price']
     template_name = 'registrations/forms.html'
     success_url = reverse_lazy('list-procedure')
 
-
-class StatusUpdate(UpdateView):
-    #login_url = reverse_lazy('')
-    model = Status
-    fields = ['name','active']
-    template_name = 'registrations/forms.html'
-    success_url = reverse_lazy('list-status')
-
-
-class PaymentUpdate(UpdateView):
-    #login_url = reverse_lazy('')
-    model = Payment
-    fields = ['name', 'discount', 'tax','active']
-    template_name = 'registrations/forms.html'
-    success_url = reverse_lazy('list-payment')
+    def get_object(self, queryset= None):
+        self.object = get_object_or_404(Procedure, pk=self.kwargs['pk'], master = self.request.user.master)
+        return self.object
 
 
 class AppointmentUpdate(UpdateView):
@@ -283,28 +296,57 @@ class AppointmentUpdate(UpdateView):
     template_name = 'registrations/forms_appointment.html'
     success_url = reverse_lazy('myschedule')
 
+    def get_object(self, queryset= None):
+        self.object = get_object_or_404(Appointment, pk=self.kwargs['pk'], master = self.request.user.master)
+        return self.object
+
 
 class ScheduleUpdate(UpdateView):
     #login_url = reverse_lazy('')
     model = Schedule
-    fields = ['professional', 'begin', 'end','interval','weekday','active']
+    fields = ['professional', 'begin', 'end','interval','weekday']
     template_name = 'registrations/forms.html'
     success_url = reverse_lazy('list-schedule')
+
+    def get_object(self, queryset= None):
+        self.object = get_object_or_404(Schedule, pk=self.kwargs['pk'], master = self.request.user.master)
+        return self.object
 
 
 class DayOffUpdate(UpdateView):
     #login_url = reverse_lazy('')
     model = DayOff
-    fields = ['professional', 'daydate', 'reason','active']
+    fields = ['professional', 'daydate', 'reason']
     template_name = 'registrations/forms.html'
     success_url = reverse_lazy('list-dayoff')
+
+    def get_object(self, queryset= None):
+        self.object = get_object_or_404(DayOff, pk=self.kwargs['pk'], master = self.request.user.master)
+        return self.object
+
 
 class UserUpdate(UpdateView):
     #login_url = reverse_lazy('')
     model = User
-    fields = ['first_name','username','email','tel','professional']
+    fields = ['first_name','username','email','tel']
     template_name = 'registrations/forms.html'
     success_url = reverse_lazy('list-user')
+
+    def get_object(self, queryset= None):
+        self.object = get_object_or_404(User, pk=self.kwargs['pk'], master = self.request.user.master)
+        return self.object
+
+
+class ClientUpdate(UpdateView):
+    #login_url = reverse_lazy('')
+    model = Client
+    fields = ['name','tel','birth','cpf','email','obs']
+    template_name = 'registrations/forms.html'
+    success_url = reverse_lazy('list-client')
+
+    def get_object(self, queryset= None):
+        self.object = get_object_or_404(Client, pk=self.kwargs['pk'], master = self.request.user.master)
+        return self.object
 
 
 #############################  DELETE  #############################
@@ -312,49 +354,62 @@ class UserUpdate(UpdateView):
 class ProcedureDelete(DeleteView):
     #login_url = reverse_lazy('')
     model = Procedure
-    fields = ['name', 'time', 'price','active']
+    fields = []
     template_name = 'registrations/delete-forms.html'
     success_url = reverse_lazy('list-procedure')
 
-
-class StatusDelete(DeleteView):
-    #login_url = reverse_lazy('')
-    model = Status
-    fields = ['name','active']
-    template_name = 'registrations/delete-forms.html'
-    success_url = reverse_lazy('list-status')
-
-
-class PaymentDelete(DeleteView):
-    #login_url = reverse_lazy('')
-    model = Payment
-    fields = ['name', 'discount', 'tax','active']
-    template_name = 'registrations/delete-forms.html'
-    success_url = reverse_lazy('list-payment')
+    def delete(self, request, *args, **kwargs):
+        self.object = self.get_object()
+        success_url = self.get_success_url()
+        self.object.is_active = False
+        self.object.save()
+        return HttpResponseRedirect(success_url)
 
 
 class AppointmentDelete(DeleteView):
     #login_url = reverse_lazy('')
     model = Appointment
-    fields = ['client','professional','status','procedure','payment' ]
+    fields = []
     template_name = 'registrations/delete-forms.html'
     success_url = reverse_lazy('myschedule')
+
+    def delete(self, request, *args, **kwargs):
+        self.object = self.get_object()
+        success_url = self.get_success_url()
+        self.object.is_active = False
+        self.object.save()
+        return HttpResponseRedirect(success_url)
 
 
 class ScheduleDelete(DeleteView):
     #login_url = reverse_lazy('')
     model = Schedule
-    fields = ['professional', 'begin', 'end','interval','weekday','active']
+    fields = []
     template_name = 'registrations/delete-forms.html'
     success_url = reverse_lazy('list-schedule')
+
+    def delete(self, request, *args, **kwargs):
+        self.object = self.get_object()
+        success_url = self.get_success_url()
+        self.object.is_active = False
+        self.object.save()
+        return HttpResponseRedirect(success_url)
 
 
 class DayOffDelete(DeleteView):
     #login_url = reverse_lazy('')
     model = DayOff
-    fields = ['professional', 'daydate', 'reason','active']
+    fields = []
     template_name = 'registrations/delete-forms.html'
     success_url = reverse_lazy('list-dayoff')
+
+    def delete(self, request, *args, **kwargs):
+        self.object = self.get_object()
+        success_url = self.get_success_url()
+        self.object.is_active = False
+        self.object.save()
+        return HttpResponseRedirect(success_url)
+
 
 class UserDelete(DeleteView):
     #login_url = reverse_lazy('')
@@ -362,6 +417,31 @@ class UserDelete(DeleteView):
     fields = []
     template_name = 'registrations/delete-forms.html'
     success_url = reverse_lazy('list-user')
+    
+    def delete(self, request, *args, **kwargs):
+        self.object = self.get_object()
+        success_url = self.get_success_url()
+        self.object.is_active = False
+        self.object.save()
+        return HttpResponseRedirect(success_url)
+
+
+class ClientDelete(DeleteView):
+    #login_url = reverse_lazy('')
+    model = Client
+    fields = []
+    template_name = 'registrations/delete-forms.html'
+    success_url = reverse_lazy('list-client')
+
+    def delete(self, request, *args, **kwargs):
+        self.object = self.get_object()
+        success_url = self.get_success_url()
+        self.object.is_active = False
+        self.object.save()
+        return HttpResponseRedirect(success_url)
+
+
+
 
 #############################  LIST  #############################
 class ProcedureList(ListView):
@@ -369,17 +449,12 @@ class ProcedureList(ListView):
     model = Procedure
     template_name = 'registrations/lists/procedure.html'
 
-
-class StatusList(ListView):
-    #login_url = reverse_lazy('login')
-    model = Status
-    template_name = 'registrations/lists/status.html'
-
-
-class PaymentList(ListView):
-    #login_url = reverse_lazy('login')
-    model = Payment
-    template_name = 'registrations/lists/payment.html'
+    def get_queryset(self):
+        if (self.request.GET.get('search')):
+            self.object_list = Procedure.objects.filter(master= self.request.user.master,name__icontains = self.request.GET.get('search'), is_active = 1).order_by('name')
+        else:
+            self.object_list = Procedure.objects.filter(master= self.request.user.master, is_active = 1).order_by('name')
+        return self.object_list
 
 
 class AppointmentList(ListView):
@@ -387,21 +462,35 @@ class AppointmentList(ListView):
     model = Appointment
     template_name = 'registrations/lists/appointment.html'
 
+    def get_queryset(self):
+        self.object_list = Schedule.objects.filter(master= self.request.user.master, is_active = 1)
+        return self.object_list
+
+
+
 
 class ScheduleList(ListView):
     #login_url = reverse_lazy('login')
     model = Schedule
     template_name = 'registrations/lists/schedule.html'
 
+    def get_queryset(self):
+        if (self.request.GET.get('search')):
+            self.object_list = Schedule.objects.filter(master= self.request.user.master, professional__first_name__icontains = self.request.GET.get('search'), is_active = 1).order_by('professional__first_name')
+        else:
+            self.object_list = Schedule.objects.filter(master= self.request.user.master, is_active = 1).order_by('professional__first_name')
+        return self.object_list
+
 class DayOffList(ListView):
     #login_url = reverse_lazy('login')
     model = DayOff
     template_name = 'registrations/lists/dayoff.html'
+
     def get_queryset(self):
         if (self.request.GET.get('search')):
-            self.object_list = DayOff.objects.filter(reason__icontains = self.request.GET.get('search'))
+            self.object_list = DayOff.objects.filter(master= self.request.user.master, professional__first_name__icontains = self.request.GET.get('search'), is_active = 1).order_by('professional__first_name')
         else:
-            self.object_list = DayOff.objects.all()
+            self.object_list = DayOff.objects.filter(master= self.request.user.master, is_active = 1).order_by('professional__first_name')
         return self.object_list
 
     
@@ -409,6 +498,26 @@ class UserList(ListView):
     #login_url = reverse_lazy('login')
     model = User
     template_name = 'registrations/lists/users.html'
+
+    def get_queryset(self):
+        if (self.request.GET.get('search')):
+            self.object_list = User.objects.filter(master= self.request.user.master,first_name__icontains = self.request.GET.get('search'), is_active = 1).order_by('first_name')
+        else:
+            self.object_list = User.objects.filter(master= self.request.user.master, is_active = 1).order_by('first_name')
+        return self.object_list
+
+
+class ClientList(ListView):
+    #login_url = reverse_lazy('login')
+    model = Client
+    template_name = 'registrations/lists/client.html'
+
+    def get_queryset(self):
+        if (self.request.GET.get('search')):
+            self.object_list = Client.objects.filter(master= self.request.user.master,name__icontains = self.request.GET.get('search'), is_active = 1).order_by('name')
+        else:
+            self.object_list = Client.objects.filter(master= self.request.user.master, is_active = 1).order_by('name')
+        return self.object_list
 
 
 

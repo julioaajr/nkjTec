@@ -6,6 +6,6 @@ from .models import *
 admin.site.register(Procedure)
 admin.site.register(Appointment)
 admin.site.register(DayOff)
-admin.site.register(Payment)
 admin.site.register(Schedule)
-admin.site.register(Status)
+admin.site.register(Client)
+

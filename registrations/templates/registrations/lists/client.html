@@ -4,7 +4,7 @@
 {% block content %}
 
 
-<h3>Feriado</h3>
+<h3>Clientes</h3>
 <hr>
 <div class="row ml-auto">
     <div class="col-sm">
@@ -12,11 +12,11 @@
             <input class="form-control mr-sm-2" type="search" value="{{request.GET.search}}" placeholder="Search" aria-label="Search" id="search"
                 name="search" autofocus>
             <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
-            <a href="{% url 'list-dayoff' %}" class="btn">Limpar</a>
+            <a href="{% url 'list-user' %}" class="btn">Limpar</a>
         </form>
     </div>
     <div class="col-sm">
-        <a href="{% url 'create-dayoff' %}" class="btn btn-success ml-5">Inserir</a>
+        <a href="{% url 'create-client' %}" class="btn btn-success ml-5">Inserir</a>
     </div>
 </div>
 
@@ -24,27 +24,24 @@
 <div class="table-responsive">
     <table class="table table-striped table-sm">
         <tr>
-            <th>Profissional</th>
-            <th>Data</th>
-            <th>Motivo</th>
-            <th>Ativo</th>
+            <th>Nome</th>
+            <th>Telefone</th>
+            <th>Data de Nascimento</th>
+            <th>CPF</th>
+            <th>E-mail</th>
             <th>Opções</th>
         </tr>
 
         {% for obj in object_list %}
         <tr>
-            {% if obj.professional == None%}
-            <td>Todos</td>
-            {% else %}
-            <td>{{obj.professional.first_name}}</td>
-            {%endif%}
-            <td>{{obj.daydate}}</td>
-            <td>{{obj.reason}}</td>
-            <td>{{obj.active}}</td>
-
+            <td>{{obj.name}}</td>
+            <td>{{obj.tel}}</td>
+            <td>{{obj.birth}}</td>
+            <td>{{obj.cpf}}</td>
+            <td>{{obj.email}}</td>
             <td>
-                <a href="{% url 'edit-dayoff' obj.pk %}" class="btn btn-warning btn-sm">Editar</a>
-                <a href="{% url 'delete-dayoff' obj.pk %}" class="btn btn-danger btn-sm">Excluir</a>
+                <a href="{% url 'edit-client' obj.pk %}" class="btn btn-warning btn-sm">Editar</a>
+                <a href="{% url 'delete-client' obj.pk %}" class="btn btn-danger btn-sm">Excluir</a>
             </td>
 
         </tr>

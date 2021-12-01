@@ -9,49 +9,31 @@ class Procedure(models.Model):
     name = models.CharField(max_length=255, verbose_name="Nome do Procedimento")
     active = models.BooleanField(default=True, verbose_name="Ativo")
     time = models.IntegerField(blank=True, null=True, verbose_name="Tempo (minutos)")
-    price = models.FloatField(blank=True, null=True,default= 0, verbose_name="Preço R$")
-    master = models.ForeignKey(User, models.DO_NOTHING, blank = True, null = True, verbose_name="Master")
+    price = models.FloatField(blank=True, null=True, verbose_name="Preço R$")
+    is_active = models.BooleanField(default=True, verbose_name="Ativo")
+    master = models.ForeignKey(User, models.DO_NOTHING, blank = True, null = True, related_name="mastersprocedure", verbose_name="Master")
+    created_by = models.ForeignKey(User, models.DO_NOTHING, blank = True, null = True, related_name="createdbyprocedure", verbose_name="Criado por")
+
+    def __str__(self):
+        return f"{self.name}"
+
+
+class Client (models.Model):
     
-
-    # DESCRICAO
-    def __str__(self):
-        return self.name
-
-
-class Status(models.Model):
-    #['name','active']
-    status_id = models.AutoField(primary_key=True)
     name = models.CharField(max_length=255, verbose_name="Nome")
-    active = models.BooleanField(default=True, verbose_name="Ativo")
+    tel = models.CharField(max_length=11, verbose_name="Telefone")
+    cpf = models.CharField(null= True, blank=True,max_length=14, verbose_name="CPF")
+    email = models.CharField(null= True, blank=True, max_length=60, verbose_name="E-mail")
+    obs = models.TextField(null=True,blank=True, verbose_name="Obervações")
+    birth = models.CharField(null=True,blank=True, max_length=10, verbose_name="Data de nascimento")#format dd/mm/yyyy
+    created_at = models.DateTimeField(auto_now=True, verbose_name="Criado em.")
+    is_active = models.BooleanField(default=True, verbose_name="Ativo")
+    master = models.ForeignKey(User, models.DO_NOTHING, blank = True, null = True, related_name="masterclient", verbose_name="Master")
+    created_by = models.ForeignKey(User, models.DO_NOTHING, blank = True, null = True, related_name="createdbyclient", verbose_name="Criado por")
 
     def __str__(self):
-        return self.name
+        return f"{self.name}"
 
-
-class Payment(models.Model):
-    # 'payment_id', 'name', 'active', 'discount','tax'
-    payment_id = models.AutoField(primary_key=True)
-    name = models.CharField(max_length=255, verbose_name="Nome")
-    active = models.BooleanField(default=True, verbose_name="Ativo")
-    discount = models.FloatField(blank=True, null=True, verbose_name="Desconto")
-    tax = models.FloatField(blank=True, null=True, verbose_name="Acréscimo")
-
-    def __str__(self):
-        return self.name
-
-
-class BugBounty(models.Model):
-    # 'bug_id', 'name', 'content', 'solved', 'created_at', 'description'
-    bug_id = models.AutoField(primary_key=True)
-    name = models.CharField(max_length=255, verbose_name="Nome")
-    subject = models.CharField(max_length=255, verbose_name="Assunto")
-    solved = models.BooleanField(default=False, verbose_name="Resolvido")
-    created_at = models.DateTimeField(auto_now=True, verbose_name="Criado em")
-    description = models.TextField(verbose_name="Descrição")
-
-    # DESCRICAO
-    def __str__(self):
-        return self.name
 
 class Appointment(models.Model):
     PAYED = (
@@ -69,17 +51,18 @@ class Appointment(models.Model):
         ('7', 'Remarcado'),
     ) #0 = monday
     #['client','professional','status','procedure','payment' ]
-    client = models.ForeignKey(User, models.DO_NOTHING, related_name="clientss", verbose_name="Cliente")
+    client = models.ForeignKey(Client, models.DO_NOTHING, related_name="clientss", verbose_name="Cliente")
     professional = models.ForeignKey(User, models.DO_NOTHING, related_name="professionalss", verbose_name="Profissional")
     status = models.CharField(max_length=1, choices=STATUS,default=0, verbose_name="Status do Agendamento")
     procedure = models.ForeignKey(Procedure, models.DO_NOTHING, verbose_name="Procedimento")
-    payment = models.ForeignKey(Payment, models.DO_NOTHING,null=True,blank=True, verbose_name="Pagamento")
     payed = models.CharField(max_length=1, choices=PAYED,default='N', verbose_name="Pago")
     appdate = models.CharField(max_length=10, verbose_name="Data")#format dd/mm/yyyy
     apphour = models.CharField(max_length=5, verbose_name="Horário")#format hh:mm
     total = models.IntegerField(blank = True, null = True, verbose_name="Total")
-    active = models.BooleanField(default=True, verbose_name="Ativo")
+    is_active = models.BooleanField(default=True, verbose_name="Ativo")
     created_at = models.DateTimeField(auto_now=True, verbose_name="Criado em")
+    master = models.ForeignKey(User, models.DO_NOTHING, blank = True, null = True, related_name="masterappointment", verbose_name="Master")
+    created_by = models.ForeignKey(User, models.DO_NOTHING, blank = True, null = True, related_name="createdbyappointmen", verbose_name="Criado por")
     def __str__(self):
         return (f"Nome: {self.client} | Data: {self.appdate} | Horário: {self.apphour}")
 
@@ -87,7 +70,6 @@ class Appointment(models.Model):
     def get_apphour(self):
         return self.__apphour
         
-
 
 class Schedule(models.Model):
     WEEKDAY = (
@@ -104,17 +86,28 @@ class Schedule(models.Model):
     begin = models.CharField(max_length=5, verbose_name="Inicio do Atendimento")#format hh:mm
     end = models.CharField(max_length=5, verbose_name="Final do Atendimento")#format hh:mm
     interval = models.IntegerField(verbose_name="Intervalo(minutos)") #in minutes ex 10
-    active = models.BooleanField(default=True, verbose_name="Ativo")
+    is_active = models.BooleanField(default=True, verbose_name="Ativo")
     created_at = models.DateTimeField(auto_now=True, verbose_name="Criado em")
+    master = models.ForeignKey(User, models.DO_NOTHING, blank = True, null = True, related_name="masterschedule", verbose_name="Master")
+    created_by = models.ForeignKey(User, models.DO_NOTHING, blank = True, null = True, related_name="createdbyschedule", verbose_name="Criado por")
+
     def __str__(self):
-        return "Begin: " + self.begin +"\nEnd: " + self.end+"\nInterval: " + str(self.interval)
+        return f"Profissional: {self.professional.first_name} Begin: {self.begin} \nEnd: {self.end} \nInterval: " + str(self.interval)
 
 
 class DayOff (models.Model):
     professional = models.ForeignKey(User, models.DO_NOTHING, blank = True, null = True, verbose_name="Profissional")
     daydate = models.CharField(max_length=10, verbose_name="Data do Feriado")#format dd/mm/yyyy
     reason = models.CharField(max_length=255, verbose_name="Motivo")
-    active = models.BooleanField(default=True, verbose_name="Ativo")
+    is_active = models.BooleanField(default=True, verbose_name="Ativo")
     created_at = models.DateTimeField(auto_now=True, verbose_name="Criado em.")
+    master = models.ForeignKey(User, models.DO_NOTHING, blank = True, null = True, related_name="masterdayoff", verbose_name="Master")
+    created_by = models.ForeignKey(User, models.DO_NOTHING, blank = True, null = True, related_name="createdbydayoff", verbose_name="Criado por")
+
     def __str__(self):
-        return f" DATA: {self.daydate} | MOTIVO: {self.reason}"
+        if self.professional:
+            return f"PROFISSIONAL: {self.professional.first_name} DATA: {self.daydate} | MOTIVO: {self.reason}"
+        return f"DATA: {self.daydate} | MOTIVO: {self.reason}"
+
+
+

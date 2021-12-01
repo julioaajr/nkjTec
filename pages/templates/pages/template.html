@@ -6,10 +6,11 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
-    <!-- Bootstrap CSS -->
+    <!-- Bootstrap CSS-->
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
         integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
     <link rel="stylesheet" href="https://unpkg.com/bootstrap-table@1.16.0/dist/bootstrap-table.min.css">
+
     {% block title %}
     <title>NkjTec Sistemas</title>
     {% endblock %}
@@ -25,13 +26,13 @@
             </button>
 
             <div class="collapse navbar-collapse" id="navbarSupportedContent">
-                {% if request.user.is_authenticated %}
                 <ul class="navbar-nav">
+                {% if request.user.is_authenticated %}
                     <li class="nav-item">
                         <a class="nav-link" href="{% url 'myschedule' %}">Minha Agenda</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="{% url 'allschedule' %}">Todas as Agendas</a>
+                        <a class="nav-link" href="{% url 'allschedules' %}">Todas as Agendas</a>
                     </li>
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button"
@@ -39,7 +40,8 @@
                             Cadastros
                         </a>
                         <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                            <a class="dropdown-item" href="{% url 'list-user' %}">Usuarios/Clientes</a>
+                            <a class="dropdown-item" href="{% url 'list-client' %}">Clientes</a>
+                            <a class="dropdown-item" href="{% url 'list-user' %}">Profissionais</a>
                             <a class="dropdown-item" href="{% url 'list-procedure' %}">Procedimento</a>
                             <a class="dropdown-item" href="{% url 'list-schedule' %}">Horário de Trabalho</a>
                             <a class="dropdown-item" href="{% url 'list-dayoff' %}">Feriados</a>
@@ -47,8 +49,16 @@
                             <a class="dropdown-item" href="{% url 'list-appointment' %}">Agendamento</a>
                         </div>
                     </li>
+                    {%else%}
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'index' %}">Cadastro de Empresa</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'index' %}">Cadastro de Profissional Solo</a>
+                    </li>
+
+                    {% endif %}
                 </ul>
-                {% endif %}
                 <div class="ml-auto">
                     {% if request.user.is_authenticated %}
                     <a class="btn btn-outline-light btn-sm" href="">Perfil {{request.user.first_name.split.0}}</a>

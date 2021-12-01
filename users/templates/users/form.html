@@ -11,12 +11,13 @@
 <div class="container">
 
     <h3>Login</h3>
-    <p class="lead"> Infoormar dados</p>
+    <p class="lead"> Informar dados</p>
     <hr>
     <form action="" method="post">
         {% csrf_token %}
 
         {{ form|crispy }}
+        <hr>
         <button type="submit" class="btn btn-primary">Entrar</button>
 
     </form>
