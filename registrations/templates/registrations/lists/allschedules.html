@@ -3,11 +3,21 @@
 
 {% block content %}
 
-<h3>Agendamentos {{datec}}</h3>
+<h3>Agendamentos {{datec}} Para {{professionaldefault.first_name}}</h3>
 <hr>
 <div class="row ml-auto">
     <div class="col-10">
         <form method="get" class="form-inline my-2 my-lg-0 mt-2" action="">
+            <select class="form-control mr-3" name="id_professional" id="id_professional">
+                {% for prof in professionals%}
+                    {%if prof.id == professionaldefault.id%}
+                        <option value={{prof.id}} selected>{{prof.first_name}}</option>
+                    {%else%}
+                        <option value={{prof.id}}>{{prof.first_name}}</option>
+                    {%endif%}
+                {% endfor %}
+            </select>
+
             <input class="form-control mr-sm-2" type="date" aria-label="date" name="date" value={{date}} autofocus>
             <button class="btn btn-outline-success my-2 my-sm-0 btn-sm" type="submit">Procurar </button>
         </form>
@@ -18,7 +28,8 @@
         </form>
     </div> -->
     <div class="col-2">
-        <a href="{% url 'create-appointment' %}?appdate={{datec}}&professional={{free.1.professional.id}}&client=" class="btn btn-success">Encaixe</a>
+        <a href="{% url 'create-appointment' %}?appdate={{datec}}&professional={{free.1.professional.id}}&client="
+            class="btn btn-success">Encaixe</a>
     </div>
 </div>
 <div class="row pt-2 pb-auto">
@@ -50,9 +61,8 @@
                 {{obj.client.first_name.split.0}}
                 {%else%}
 
-                <a href="{% url 'create-appointment' %}?appdate={{obj.appdate}}&apphour={{obj.apphour}}&professional={{obj.professional.id}}" 
-                
-                class="btn btn-success btn-sm">Inserir</a>
+                <a href="{% url 'create-appointment' %}?appdate={{obj.appdate}}&apphour={{obj.apphour}}&professional={{obj.professional.id}}"
+                    class="btn btn-success btn-sm">Inserir</a>
                 {% endif%}
             </td>
             <td><a href="https://api.whatsapp.com/send?phone=55{{obj.client.tel}}&text=Olá temos um Agendamento dia {{obj.appdate}} as {{obj.apphour}} com {{obj.professional.first_name}}"
@@ -66,7 +76,8 @@
 
             <td>
                 {% if obj.pk %}
-                <a href="{% url 'edit-appointment' obj.pk %}" class="btn btn-warning btn-sm"><i class="fa fa-pencil" aria-hidden="true"></i></a>
+                <a href="{% url 'edit-appointment' obj.pk %}" class="btn btn-warning btn-sm"><i class="fa fa-pencil"
+                        aria-hidden="true"></i></a>
                 <a href="{% url 'delete-appointment' obj.pk %}" class="btn btn-danger btn-sm">Excluir</a>
                 {%else%}
                 {% endif%}

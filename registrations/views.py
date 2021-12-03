@@ -1,3 +1,4 @@
+from django.contrib.auth.decorators import login_required
 from django.http import request
 from django.http.response import HttpResponseRedirect
 from django.shortcuts import render, get_object_or_404
@@ -12,9 +13,10 @@ from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMix
 
 
 ############################## VIEWS GERAIS ##############################
-
-def AllSchedules(request):
+@login_required
+def AllSchedules( request):
     data = {
+        'professionals':{},
         'feriados':{},
         'free':{},
     }
@@ -29,17 +31,25 @@ def AllSchedules(request):
     busy = []
     free = []
     weekday = Time().convertweekday(date)
-
     try:
+        data['professionals'] = User.objects.filter(master = request.user.master)
+        
+        if(request.GET.get('id_professional')):
+            professional = User.objects.get(id = request.GET.get('id_professional'))
+            data['professionaldefault'] = professional
+        else:
+            professional = data['professionals'][0]
+
         data['feriados'] = DayOff.objects.filter(daydate = date).filter(professional=request.user.id)
-        schedule = Schedule.objects.filter(professional=request.user.id).filter(weekday=weekday)
-        busy = Appointment.objects.filter(professional=request.user.id).filter(appdate = date)
+        schedule = Schedule.objects.filter(master = request.user.master, professional = professional).filter(weekday=weekday)
+        busy = Appointment.objects.filter(master = request.user.master, professional = professional, appdate = date)
+        
     except:
         pass
 
 
     if len(data['feriados']) >= 1 and request.user.is_staff==False:
-            return render(request, 'registrations/lists/myschedule.html',data)
+            return render(request, 'registrations/lists/allschedules.html',data)
             
     busy = list(busy)
     busyclient = []
@@ -55,8 +65,9 @@ def AllSchedules(request):
     busy += busyclient
     busy = sorted(busy,key = lambda x: x.apphour)
     data['free']=busy
-    return render(request, 'registrations/lists/myschedule.html',data)
+    return render(request, 'registrations/lists/allschedules.html',data)
 
+@login_required
 def AllSchedulesMaster(request, master):
     print (master)
     data = {
@@ -102,7 +113,7 @@ def AllSchedulesMaster(request, master):
     data['free']=busy
     return render(request, 'registrations/lists/fullschedulemaster.html',data)
 
-
+@login_required
 def MySchedule(request): #VIEW ONDE BUSCA OS HORÁRIOS DO PROFISSIONAL LOGADO.
     data = {
         'feriados':{},
@@ -152,8 +163,8 @@ def MySchedule(request): #VIEW ONDE BUSCA OS HORÁRIOS DO PROFISSIONAL LOGADO.
 
 #############################  CREATE  #############################
 
-class ProcedureCreate(CreateView):
-    #login_url = reverse_lazy('')
+class ProcedureCreate(LoginRequiredMixin, CreateView):
+    login_url = reverse_lazy('')
     model = Procedure
     fields = ['name', 'time', 'price']
     template_name = 'registrations/forms.html'
@@ -166,7 +177,7 @@ class ProcedureCreate(CreateView):
         return url
 
 
-class AppointmentCreate(CreateView):
+class AppointmentCreate(LoginRequiredMixin, CreateView):
     #login_url = reverse_lazy('')
     #fields = '__all__'
     model = Appointment
@@ -203,8 +214,8 @@ class AppointmentCreate(CreateView):
         return url
 
 
-class ScheduleCreate(CreateView):
-    #login_url = reverse_lazy('')
+class ScheduleCreate(LoginRequiredMixin, CreateView):
+    login_url = reverse_lazy('login')
     model = Schedule
     fields = ['professional', 'begin', 'end','interval','weekday']
     template_name = 'registrations/forms.html'
@@ -223,10 +234,9 @@ class ScheduleCreate(CreateView):
         return url
 
 
-class DayOffCreate(CreateView):
-    #login_url = reverse_lazy('')
+class DayOffCreate(LoginRequiredMixin, CreateView):
+    login_url = reverse_lazy('login')
     model = DayOff
-    #fields = ['professional', 'daydate', 'reason','active']
     fields = ['professional','daydate','reason']
     template_name = 'registrations/forms.html'
     success_url = reverse_lazy('list-dayoff')
@@ -243,10 +253,10 @@ class DayOffCreate(CreateView):
         return url
 
 
-class UserCreate(CreateView):
-    #login_url = reverse_lazy('')
+class UserCreate(LoginRequiredMixin, CreateView):
+    login_url = reverse_lazy('login')
     model = User
-    fields = ['first_name','username','email','tel','professional']
+    fields = ['first_name','nickname','username','email','tel','professional']
     template_name = 'registrations/forms.html'
     success_url = reverse_lazy('list-user')
 
@@ -258,12 +268,13 @@ class UserCreate(CreateView):
     def form_valid(self, form):
         form.instance.created_by = self.request.user
         form.instance.master = self.request.user.master
+        form.instance.professional = True
         url = super().form_valid(form)
         return url
 
 
-class ClientCreate(CreateView):
-    #login_url = reverse_lazy('')
+class ClientCreate(LoginRequiredMixin, CreateView):
+    login_url = reverse_lazy('login')
     model = Client
     fields = ['name','tel','birth','cpf','email','obs']
     template_name = 'registrations/forms.html'
@@ -277,8 +288,8 @@ class ClientCreate(CreateView):
 
  #############################  UPDATE  #############################
 
-class ProcedureUpdate(UpdateView):
-    #login_url = reverse_lazy('')
+class ProcedureUpdate(LoginRequiredMixin, UpdateView):
+    login_url = reverse_lazy('login')
     model = Procedure
     fields = ['name', 'time', 'price']
     template_name = 'registrations/forms.html'
@@ -289,8 +300,8 @@ class ProcedureUpdate(UpdateView):
         return self.object
 
 
-class AppointmentUpdate(UpdateView):
-    #login_url = reverse_lazy('')
+class AppointmentUpdate(LoginRequiredMixin, UpdateView):
+    login_url = reverse_lazy('login')
     model = Appointment
     fields =  ['appdate','apphour','client','professional','status','procedure','payed' ]
     template_name = 'registrations/forms_appointment.html'
@@ -301,8 +312,8 @@ class AppointmentUpdate(UpdateView):
         return self.object
 
 
-class ScheduleUpdate(UpdateView):
-    #login_url = reverse_lazy('')
+class ScheduleUpdate(LoginRequiredMixin, UpdateView):
+    login_url = reverse_lazy('login')
     model = Schedule
     fields = ['professional', 'begin', 'end','interval','weekday']
     template_name = 'registrations/forms.html'
@@ -313,8 +324,8 @@ class ScheduleUpdate(UpdateView):
         return self.object
 
 
-class DayOffUpdate(UpdateView):
-    #login_url = reverse_lazy('')
+class DayOffUpdate(LoginRequiredMixin, UpdateView):
+    login_url = reverse_lazy('login')
     model = DayOff
     fields = ['professional', 'daydate', 'reason']
     template_name = 'registrations/forms.html'
@@ -325,8 +336,8 @@ class DayOffUpdate(UpdateView):
         return self.object
 
 
-class UserUpdate(UpdateView):
-    #login_url = reverse_lazy('')
+class UserUpdate(LoginRequiredMixin, UpdateView):
+    login_url = reverse_lazy('login')
     model = User
     fields = ['first_name','username','email','tel']
     template_name = 'registrations/forms.html'
@@ -337,8 +348,8 @@ class UserUpdate(UpdateView):
         return self.object
 
 
-class ClientUpdate(UpdateView):
-    #login_url = reverse_lazy('')
+class ClientUpdate(LoginRequiredMixin, UpdateView):
+    login_url = reverse_lazy('login')
     model = Client
     fields = ['name','tel','birth','cpf','email','obs']
     template_name = 'registrations/forms.html'
@@ -351,13 +362,17 @@ class ClientUpdate(UpdateView):
 
 #############################  DELETE  #############################
 
-class ProcedureDelete(DeleteView):
-    #login_url = reverse_lazy('')
+class ProcedureDelete(LoginRequiredMixin, DeleteView):
+    login_url = reverse_lazy('login')
     model = Procedure
     fields = []
     template_name = 'registrations/delete-forms.html'
     success_url = reverse_lazy('list-procedure')
 
+    def get_object(self, queryset= None):
+        self.object = get_object_or_404(Procedure, pk=self.kwargs['pk'], master = self.request.user.master)
+        return self.object
+
     def delete(self, request, *args, **kwargs):
         self.object = self.get_object()
         success_url = self.get_success_url()
@@ -366,13 +381,17 @@ class ProcedureDelete(DeleteView):
         return HttpResponseRedirect(success_url)
 
 
-class AppointmentDelete(DeleteView):
-    #login_url = reverse_lazy('')
+class AppointmentDelete(LoginRequiredMixin, DeleteView):
+    login_url = reverse_lazy('login')
     model = Appointment
     fields = []
     template_name = 'registrations/delete-forms.html'
     success_url = reverse_lazy('myschedule')
 
+    def get_object(self, queryset= None):
+        self.object = get_object_or_404(Appointment, pk=self.kwargs['pk'], master = self.request.user.master)
+        return self.object
+
     def delete(self, request, *args, **kwargs):
         self.object = self.get_object()
         success_url = self.get_success_url()
@@ -381,13 +400,17 @@ class AppointmentDelete(DeleteView):
         return HttpResponseRedirect(success_url)
 
 
-class ScheduleDelete(DeleteView):
-    #login_url = reverse_lazy('')
+class ScheduleDelete(LoginRequiredMixin, DeleteView):
+    login_url = reverse_lazy('login')
     model = Schedule
     fields = []
     template_name = 'registrations/delete-forms.html'
     success_url = reverse_lazy('list-schedule')
 
+    def get_object(self, queryset= None):
+        self.object = get_object_or_404(Schedule, pk=self.kwargs['pk'], master = self.request.user.master)
+        return self.object
+
     def delete(self, request, *args, **kwargs):
         self.object = self.get_object()
         success_url = self.get_success_url()
@@ -396,13 +419,17 @@ class ScheduleDelete(DeleteView):
         return HttpResponseRedirect(success_url)
 
 
-class DayOffDelete(DeleteView):
-    #login_url = reverse_lazy('')
+class DayOffDelete(LoginRequiredMixin, DeleteView):
+    login_url = reverse_lazy('login')
     model = DayOff
     fields = []
     template_name = 'registrations/delete-forms.html'
     success_url = reverse_lazy('list-dayoff')
 
+    def get_object(self, queryset= None):
+        self.object = get_object_or_404(DayOff, pk=self.kwargs['pk'], master = self.request.user.master)
+        return self.object
+
     def delete(self, request, *args, **kwargs):
         self.object = self.get_object()
         success_url = self.get_success_url()
@@ -411,12 +438,16 @@ class DayOffDelete(DeleteView):
         return HttpResponseRedirect(success_url)
 
 
-class UserDelete(DeleteView):
-    #login_url = reverse_lazy('')
+class UserDelete(LoginRequiredMixin, DeleteView):
+    login_url = reverse_lazy('login')
     model = User
     fields = []
     template_name = 'registrations/delete-forms.html'
     success_url = reverse_lazy('list-user')
+
+    def get_object(self, queryset= None):
+        self.object = get_object_or_404(User, pk=self.kwargs['pk'], master = self.request.user.master)
+        return self.object
     
     def delete(self, request, *args, **kwargs):
         self.object = self.get_object()
@@ -426,12 +457,16 @@ class UserDelete(DeleteView):
         return HttpResponseRedirect(success_url)
 
 
-class ClientDelete(DeleteView):
-    #login_url = reverse_lazy('')
+class ClientDelete(LoginRequiredMixin, DeleteView):
+    login_url = reverse_lazy('login')
     model = Client
     fields = []
     template_name = 'registrations/delete-forms.html'
     success_url = reverse_lazy('list-client')
+
+    def get_object(self, queryset= None):
+        self.object = get_object_or_404(Client, pk=self.kwargs['pk'], master = self.request.user.master)
+        return self.object
 
     def delete(self, request, *args, **kwargs):
         self.object = self.get_object()
@@ -444,8 +479,8 @@ class ClientDelete(DeleteView):
 
 
 #############################  LIST  #############################
-class ProcedureList(ListView):
-    #login_url = reverse_lazy('login')
+class ProcedureList(LoginRequiredMixin, ListView):
+    login_url = reverse_lazy('login')
     model = Procedure
     template_name = 'registrations/lists/procedure.html'
 
@@ -457,20 +492,20 @@ class ProcedureList(ListView):
         return self.object_list
 
 
-class AppointmentList(ListView):
-    #login_url = reverse_lazy('login')
+class AppointmentList(LoginRequiredMixin, ListView):
+    login_url = reverse_lazy('login')
     model = Appointment
     template_name = 'registrations/lists/appointment.html'
 
     def get_queryset(self):
-        self.object_list = Schedule.objects.filter(master= self.request.user.master, is_active = 1)
+        self.object_list = Appointment.objects.filter(master= self.request.user.master, is_active = 1)
         return self.object_list
 
 
 
 
-class ScheduleList(ListView):
-    #login_url = reverse_lazy('login')
+class ScheduleList(LoginRequiredMixin, ListView):
+    login_url = reverse_lazy('login')
     model = Schedule
     template_name = 'registrations/lists/schedule.html'
 
@@ -481,8 +516,8 @@ class ScheduleList(ListView):
             self.object_list = Schedule.objects.filter(master= self.request.user.master, is_active = 1).order_by('professional__first_name')
         return self.object_list
 
-class DayOffList(ListView):
-    #login_url = reverse_lazy('login')
+class DayOffList(LoginRequiredMixin, ListView):
+    login_url = reverse_lazy('login')
     model = DayOff
     template_name = 'registrations/lists/dayoff.html'
 
@@ -494,8 +529,8 @@ class DayOffList(ListView):
         return self.object_list
 
     
-class UserList(ListView):
-    #login_url = reverse_lazy('login')
+class UserList(LoginRequiredMixin, ListView):
+    login_url = reverse_lazy('login')
     model = User
     template_name = 'registrations/lists/users.html'
 
@@ -507,8 +542,8 @@ class UserList(ListView):
         return self.object_list
 
 
-class ClientList(ListView):
-    #login_url = reverse_lazy('login')
+class ClientList(LoginRequiredMixin, ListView):
+    login_url = reverse_lazy('login')
     model = Client
     template_name = 'registrations/lists/client.html'
 
