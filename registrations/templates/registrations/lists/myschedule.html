@@ -3,7 +3,7 @@
 
 {% block content %}
 
-<h3>Agendamentos {{datec}}</h3>
+<h4>Agendamentos {{datec}} {{weekday}} | Para {{request.user.first_name}}</h4>
 <hr>
 <div class="row ml-auto">
     <div class="col-10">
@@ -42,12 +42,11 @@
 
         {% for obj in free %}
         <tr>
-            {%if obj.status != '4'%}
             <td>{{obj.apphour}}</td>
 
-            <td>
+            <td title="{{obj.client.name}}">
                 {% if obj.pk %}
-                {{obj.client.first_name.split.0}}
+                {{obj.client.name.split.0}}
                 {%else%}
 
                 <a href="{% url 'create-appointment' %}?appdate={{obj.appdate}}&apphour={{obj.apphour}}&professional={{obj.professional.id}}" 
@@ -66,14 +65,13 @@
 
             <td>
                 {% if obj.pk %}
-                <a href="{% url 'edit-appointment' obj.pk %}" class="btn btn-warning btn-sm"><i class="fa fa-pencil" aria-hidden="true"></i></a>
-                <a href="{% url 'delete-appointment' obj.pk %}" class="btn btn-danger btn-sm">Excluir</a>
+                <a href="{% url 'edit-appointment' obj.pk %}" class="btn btn-warning btn-sm"><i class="bi bi-pencil"></i></i></a>
+                <a href="{% url 'delete-appointment' obj.pk %}" class="btn btn-danger btn-sm"><i class="bi bi-trash"></i></a>
                 {%else%}
                 {% endif%}
             </td>
 
         </tr>
-        {%endif%}
         {% empty %}
         <tr>
             <td colspan="3">

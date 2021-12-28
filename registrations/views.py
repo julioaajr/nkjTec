@@ -10,7 +10,7 @@ from django.urls import reverse_lazy
 from .utility import * 
 from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
 
-
+WEEKDAY = ['Segunda-feira','Terça-feira','Quarta-feira','Quinta-feira','Sexta-feira','Sábado','Domingo']
 
 ############################## VIEWS GERAIS ##############################
 @login_required
@@ -31,8 +31,10 @@ def AllSchedules( request):
     busy = []
     free = []
     weekday = Time().convertweekday(date)
+    data['weekday'] = WEEKDAY[weekday]
     try:
         data['professionals'] = User.objects.filter(master = request.user.master)
+        data['professionaldefault'] = data['professionals'][0]
         
         if(request.GET.get('id_professional')):
             professional = User.objects.get(id = request.GET.get('id_professional'))
@@ -40,16 +42,16 @@ def AllSchedules( request):
         else:
             professional = data['professionals'][0]
 
-        data['feriados'] = DayOff.objects.filter(daydate = date).filter(professional=request.user.id)
-        schedule = Schedule.objects.filter(master = request.user.master, professional = professional).filter(weekday=weekday)
-        busy = Appointment.objects.filter(master = request.user.master, professional = professional, appdate = date)
+        data['feriados'] = DayOff.objects.filter(daydate = date).filter(professional=request.user.id).filter(is_active = True)
+        schedule = Schedule.objects.filter(master = request.user.master, professional = professional).filter(weekday=weekday).filter(is_active = True)
+        busy = Appointment.objects.filter(master = request.user.master, professional = professional, appdate = date).filter(is_active = True)
         
     except:
         pass
 
 
-    if len(data['feriados']) >= 1 and request.user.is_staff==False:
-            return render(request, 'registrations/lists/allschedules.html',data)
+    """    if len(data['feriados']) >= 1 and request.user.is_staff==False:
+            return render(request, 'registrations/lists/allschedules.html',data)"""
             
     busy = list(busy)
     busyclient = []
@@ -130,17 +132,18 @@ def MySchedule(request): #VIEW ONDE BUSCA OS HORÁRIOS DO PROFISSIONAL LOGADO.
     busy = []
     free = []
     weekday = Time().convertweekday(date)
+    data['weekday'] = WEEKDAY[weekday]
 
     try:
         data['feriados'] = DayOff.objects.filter(daydate = date).filter(professional=request.user.id)
-        schedule = Schedule.objects.filter(professional=request.user.id).filter(weekday=weekday)
-        busy = Appointment.objects.filter(professional=request.user.id).filter(appdate = date)
+        schedule = Schedule.objects.filter(professional=request.user.id).filter(weekday=weekday).filter(is_active = True)
+        busy = Appointment.objects.filter(professional=request.user.id).filter(appdate = date).filter(is_active = True)
     except:
         pass
 
 
-    if len(data['feriados']) >= 1 and request.user.is_staff==False:
-            return render(request, 'registrations/lists/myschedule.html',data)
+    """    if len(data['feriados']) >= 1 and request.user.is_staff==False:
+            return render(request, 'registrations/lists/myschedule.html',data)"""
             
     busy = list(busy)
     busyclient = []
