@@ -5,5 +5,5 @@ from .views import *
 
 urlpatterns =[
     #cadastrar
-    path('', IndexView.as_view(), name ='index'),
+    path('', Index, name ='index'),
 ]
