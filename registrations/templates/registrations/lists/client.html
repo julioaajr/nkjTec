@@ -35,7 +35,9 @@
         {% for obj in object_list %}
         <tr>
             <td>{{obj.name}}</td>
-            <td>{{obj.tel}}</td>
+            <td><a href="https://api.whatsapp.com/send?phone=55{{obj.tel}}&text="
+                target="_blank">
+                {{obj.tel}}</a></td>
             <td>{{obj.birth}}</td>
             <td>{{obj.cpf}}</td>
             <td>{{obj.email}}</td>

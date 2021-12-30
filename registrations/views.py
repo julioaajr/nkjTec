@@ -27,6 +27,18 @@ def AllSchedules( request):
         data['date'] = datetime.today().strftime('%Y-%m-%d')
         date = datetime.today().strftime('%d/%m/%Y')
     data['datec'] = date
+
+    #AQUI UTILIZO PARA PASSAR PELOS STATUS USANDO OS BOTOES DA AGENDA
+    if(request.GET.get('idappointment') and request.GET.get('newstatus')):
+        appointment = Appointment.objects.get(pk = request.GET.get('idappointment'))
+        appointment.status = request.GET.get('newstatus')
+        if(request.GET.get('newstatus') == '4'):
+            appointment.payed = 'S'
+        #valida se o usuario que esta pedindo é da mesma empresa que o agendamento
+        if (request.user.master == appointment.master):
+            appointment.save()
+
+
     schedule = []
     busy = []
     free = []
@@ -121,6 +133,19 @@ def MySchedule(request): #VIEW ONDE BUSCA OS HORÁRIOS DO PROFISSIONAL LOGADO.
         'feriados':{},
         'free':{},
     }
+
+
+    #AQUI UTILIZO PARA PASSAR PELOS STATUS USANDO OS BOTOES DA AGENDA
+    if(request.GET.get('idappointment') and request.GET.get('newstatus')):
+        appointment = Appointment.objects.get(pk = request.GET.get('idappointment'))
+        appointment.status = request.GET.get('newstatus')
+        if(request.GET.get('newstatus') == '4'):
+            appointment.payed = 'S'
+        #valida se o usuario que esta pedindo é da mesma empresa que o agendamento
+        if (request.user.master == appointment.master):
+            appointment.save()
+
+
     if (request.GET.get('date')):
         data['date'] = request.GET.get('date')
         date = Time().convertdate(request.GET.get('date'))
@@ -539,9 +564,9 @@ class UserList(LoginRequiredMixin, ListView):
 
     def get_queryset(self):
         if (self.request.GET.get('search')):
-            self.object_list = User.objects.filter(master= self.request.user.master,first_name__icontains = self.request.GET.get('search'), is_active = 1).order_by('first_name')
+            self.object_list = User.objects.filter(master= self.request.user.master,first_name__icontains = self.request.GET.get('search'), is_active = 1)
         else:
-            self.object_list = User.objects.filter(master= self.request.user.master, is_active = 1).order_by('first_name')
+            self.object_list = User.objects.filter(master= self.request.user.master, is_active = 1)
         return self.object_list
 
 
@@ -552,9 +577,9 @@ class ClientList(LoginRequiredMixin, ListView):
 
     def get_queryset(self):
         if (self.request.GET.get('search')):
-            self.object_list = Client.objects.filter(master= self.request.user.master,name__icontains = self.request.GET.get('search'), is_active = 1).order_by('name')
+            self.object_list = Client.objects.filter(master= self.request.user.master,name__icontains = self.request.GET.get('search'), is_active = 1)
         else:
-            self.object_list = Client.objects.filter(master= self.request.user.master, is_active = 1).order_by('name')
+            self.object_list = Client.objects.filter(master= self.request.user.master, is_active = 1)
         return self.object_list
 
 

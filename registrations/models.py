@@ -1,4 +1,5 @@
 from django.db import models
+from django.db.models.functions.text import Upper
 from users.models import User
 
 # Create your models here.
@@ -32,7 +33,10 @@ class Client (models.Model):
     created_by = models.ForeignKey(User, models.DO_NOTHING, blank = True, null = True, related_name="createdbyclient", verbose_name="Criado por")
 
     def __str__(self):
-        return f"{self.name}"
+        return f"{self.name} | {self.tel}"
+
+    class Meta:
+        ordering = [Upper('name')]
 
 
 class Appointment(models.Model):
@@ -49,7 +53,7 @@ class Appointment(models.Model):
         ('5', 'Faltou'),
         ('6', 'Cancelado'),
         ('7', 'Remarcado'),
-    ) #0 = monday
+    )
     #['client','professional','status','procedure','payment' ]
     client = models.ForeignKey(Client, models.DO_NOTHING, related_name="clientss", verbose_name="Cliente")
     professional = models.ForeignKey(User, models.DO_NOTHING, related_name="professionalss", verbose_name="Profissional")
