@@ -2,7 +2,7 @@ from datetime import *
 import smtplib
 from email.mime.text import MIMEText
 from datetime import timedelta, datetime
-
+from decouple import config
 
 class Time:
 
@@ -42,8 +42,8 @@ class Time:
 class Emails:
     #3 strings email assunto e conteudo
     def sendmails(self, receiver, subject, content):
-        fromx = 'barbeariaebenezerlondrina@gmail.com'
-        pwd = 'barbershop'
+        fromx = config('fromx')
+        pwd =config('pwd')
         to  = receiver
         msg = MIMEText(content)
         msg['Subject'] = subject

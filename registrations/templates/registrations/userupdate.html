@@ -1,0 +1,55 @@
+{% extends 'pages/template.html' %}
+{% load static %}
+{% load crispy_forms_tags %}
+
+
+{% block title %}
+<title>Perfil</title>
+{% endblock %}
+
+{% block content %}
+
+<div class="container">
+
+    <h3>Perfil</h3>
+    <hr>
+    <p>No lugar do primeiro nome coloque o nome completo</p>
+    <form action="" method="post">{% csrf_token %}
+        {{ form|crispy }}
+        <hr>
+        <button type="submit" id="btn_submit" class="btn btn-primary">SALVAR</button>
+        <a href="{% url 'passchange'%}?target={{user.pk}}"> Alterar Senha</a>
+        
+    </form>
+</div>
+
+{% endblock %}
+
+
+{% block scripts %}
+<script src="{% static 'js/jquery.mask.min.js' %}"></script>
+
+<script>
+    $(document).ready(function () {
+        $("#id_birth").mask("00/00/0000");
+        $("#id_apphour").mask("00:00");
+        $("#id_username").mask("000.000.000-00");
+        $("#id_cpf").mask("000.000.000-00");
+        $("#id_tel").mask("00000000000");
+        $("#id_nickname").mask("AAAAAAAAAAAAAAAAAAAA");
+        $("#id_tel").prop("placeholder", "exemplo 43999999999");
+        document.getElementById("hint_id_username").textContent = "Informe o CPF";
+        document.getElementById("hint_id_is_active").textContent = "Campo 'ATIVO' indica se o usuário esta ou não ativo.";
+
+    });
+
+
+
+
+
+
+
+</script>
+
+
+{% endblock %}

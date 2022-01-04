@@ -1,7 +1,7 @@
 from django.contrib.auth.decorators import login_required
 from django.http import request
 from django.http.response import HttpResponseRedirect
-from django.shortcuts import render, get_object_or_404
+from django.shortcuts import render, get_object_or_404, redirect
 from django.views.generic import CreateView
 from django.views.generic.edit import UpdateView, UpdateView, DeleteView
 from django.views.generic.list import ListView
@@ -9,6 +9,7 @@ from .models import *
 from django.urls import reverse_lazy
 from .utility import * 
 from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
+import random
 
 WEEKDAY = ['Segunda-feira','Terça-feira','Quarta-feira','Quinta-feira','Sexta-feira','Sábado','Domingo']
 
@@ -61,9 +62,6 @@ def AllSchedules( request):
     except:
         pass
 
-
-    """    if len(data['feriados']) >= 1 and request.user.is_staff==False:
-            return render(request, 'registrations/lists/allschedules.html',data)"""
             
     busy = list(busy)
     busyclient = []
@@ -73,7 +71,7 @@ def AllSchedules( request):
         app = Appointment()
         app.apphour = i
         app.appdate = date
-        app.professional = request.user
+        app.professional = professional
         app.status = ""
         busyclient.append(app)
     busy += busyclient
@@ -81,10 +79,11 @@ def AllSchedules( request):
     data['free']=busy
     return render(request, 'registrations/lists/allschedules.html',data)
 
+
 @login_required
 def AllSchedulesMaster(request, master):
-    print (master)
     data = {
+        'professionals':{},
         'feriados':{},
         'free':{},
     }
@@ -95,45 +94,6 @@ def AllSchedulesMaster(request, master):
         data['date'] = datetime.today().strftime('%Y-%m-%d')
         date = datetime.today().strftime('%d/%m/%Y')
     data['datec'] = date
-    schedule = []
-    busy = []
-    free = []
-    weekday = Time().convertweekday(date)
-
-    try:
-        data['feriados'] = DayOff.objects.filter(daydate = date).filter(professional=request.user.id)
-        schedule = Schedule.objects.filter(professional=request.user.id).filter(weekday=weekday)
-        busy = Appointment.objects.filter(professional=request.user.id).filter(appdate = date)
-    except:
-        pass
-
-
-    if len(data['feriados']) >= 1 and request.user.is_staff==False:
-            return render(request, 'registrations/lists/fullschedulemaster.html',data)
-            
-    busy = list(busy)
-    busyclient = []
-    for i in schedule:
-        free += Time().FreeSchedule(i,busy)
-    for i in free:
-        app = Appointment()
-        app.apphour = i
-        app.appdate = date
-        app.professional = request.user
-        app.status = ""
-        busyclient.append(app)
-    busy += busyclient
-    busy = sorted(busy,key = lambda x: x.apphour)
-    data['free']=busy
-    return render(request, 'registrations/lists/fullschedulemaster.html',data)
-
-@login_required
-def MySchedule(request): #VIEW ONDE BUSCA OS HORÁRIOS DO PROFISSIONAL LOGADO.
-    data = {
-        'feriados':{},
-        'free':{},
-    }
-
 
     #AQUI UTILIZO PARA PASSAR PELOS STATUS USANDO OS BOTOES DA AGENDA
     if(request.GET.get('idappointment') and request.GET.get('newstatus')):
@@ -145,6 +105,63 @@ def MySchedule(request): #VIEW ONDE BUSCA OS HORÁRIOS DO PROFISSIONAL LOGADO.
         if (request.user.master == appointment.master):
             appointment.save()
 
+
+    schedule = []
+    busy = []
+    free = []
+    weekday = Time().convertweekday(date)
+    data['weekday'] = WEEKDAY[weekday]
+    try:
+        data['professionals'] = User.objects.filter(master = request.user.master)
+        data['professionaldefault'] = data['professionals'][0]
+        
+        if(request.GET.get('id_professional')):
+            professional = User.objects.get(id = request.GET.get('id_professional'))
+            data['professionaldefault'] = professional
+        else:
+            professional = data['professionals'][0]
+
+        data['feriados'] = DayOff.objects.filter(daydate = date).filter(professional=request.user.id).filter(is_active = True)
+        schedule = Schedule.objects.filter(master = request.user.master, professional = professional).filter(weekday=weekday).filter(is_active = True)
+        busy = Appointment.objects.filter(master = request.user.master, professional = professional, appdate = date).filter(is_active = True)
+        
+    except:
+        pass
+
+            
+    busy = list(busy)
+    busyclient = []
+    for i in schedule:
+        free += Time().FreeSchedule(i,busy)
+    for i in free:
+        app = Appointment()
+        app.apphour = i
+        app.appdate = date
+        app.professional = professional
+        app.status = ""
+        busyclient.append(app)
+    busy += busyclient
+    busy = sorted(busy,key = lambda x: x.apphour)
+    data['free']=busy
+    return render(request, 'registrations/lists/allschedulesmaster.html',data)
+
+
+@login_required
+def MySchedule(request): #VIEW ONDE BUSCA OS HORÁRIOS DO PROFISSIONAL LOGADO.
+    data = {
+        'feriados':{},
+        'free':{},
+    }
+
+    #AQUI UTILIZO PARA PASSAR PELOS STATUS USANDO OS BOTOES DA AGENDA
+    if(request.GET.get('idappointment') and request.GET.get('newstatus')):
+        appointment = Appointment.objects.get(pk = request.GET.get('idappointment'))
+        appointment.status = request.GET.get('newstatus')
+        if(request.GET.get('newstatus') == '4'):
+            appointment.payed = 'S'
+        #valida se o usuario que esta pedindo é da mesma empresa que o agendamento
+        if (request.user.master == appointment.master):
+            appointment.save()
 
     if (request.GET.get('date')):
         data['date'] = request.GET.get('date')
@@ -166,7 +183,6 @@ def MySchedule(request): #VIEW ONDE BUSCA OS HORÁRIOS DO PROFISSIONAL LOGADO.
     except:
         pass
 
-
     """    if len(data['feriados']) >= 1 and request.user.is_staff==False:
             return render(request, 'registrations/lists/myschedule.html',data)"""
             
@@ -186,6 +202,54 @@ def MySchedule(request): #VIEW ONDE BUSCA OS HORÁRIOS DO PROFISSIONAL LOGADO.
     data['free']=busy
     return render(request, 'registrations/lists/myschedule.html',data)
 
+
+
+def PassRecovery(request):
+
+    if request.method == 'GET':
+        return render(request, 'registrations/passrecovery.html')
+
+    if request.method == 'POST':
+        print(request.POST.get('username'))
+        
+        try:
+            user = User.objects.get(username = request.POST.get('username'),email = request.POST.get('email'))
+        except:
+            pass
+        
+        x = str(random.randint(10000000,99999999))
+        user.password = x
+        user.set_password(user.password)
+        subject = "NkjTec Sistemas | RECUPERAÇÃO DE SENHA!"
+        content = "Sua nova senha é: "+ x
+        u = Emails()
+        print(u.sendmails(user.email,subject,content))
+        user.save()
+        return render(request, 'registrations/passrecovery.html')
+
+@login_required
+def PassChange(request):
+    data={}
+    if request.method == 'GET':
+        data['target'] = request.GET.get('target')
+        return render(request, 'registrations/passchange.html',data)
+
+    if request.method == 'POST':
+        try:
+            user = User.objects.get(id = request.user.id)
+            target = User.objects.get(id = request.POST.get('target'))
+        except:
+            pass
+        if(user.master == target.master):
+            target.set_password(request.POST.get('password'))
+            subject = "NkjTec Sistemas | Alteracao de senha"
+            content = "Sua Senha foi alterada, senão foi você sugerimos que recupere sua senha o quanto antes!"
+            u = Emails()
+            print(u.sendmails(user.email,subject,content))
+            target.save()
+            if(user != target):
+                return redirect('myschedule')            
+        return redirect('login')
 
 
 
@@ -367,8 +431,8 @@ class DayOffUpdate(LoginRequiredMixin, UpdateView):
 class UserUpdate(LoginRequiredMixin, UpdateView):
     login_url = reverse_lazy('login')
     model = User
-    fields = ['first_name','username','email','tel']
-    template_name = 'registrations/forms.html'
+    fields = ['first_name','username','email','tel','is_active']
+    template_name = 'registrations/userupdate.html'
     success_url = reverse_lazy('list-user')
 
     def get_object(self, queryset= None):
@@ -564,9 +628,9 @@ class UserList(LoginRequiredMixin, ListView):
 
     def get_queryset(self):
         if (self.request.GET.get('search')):
-            self.object_list = User.objects.filter(master= self.request.user.master,first_name__icontains = self.request.GET.get('search'), is_active = 1)
+            self.object_list = User.objects.filter(master= self.request.user.master,first_name__icontains = self.request.GET.get('search'))
         else:
-            self.object_list = User.objects.filter(master= self.request.user.master, is_active = 1)
+            self.object_list = User.objects.filter(master= self.request.user.master)
         return self.object_list
 
 

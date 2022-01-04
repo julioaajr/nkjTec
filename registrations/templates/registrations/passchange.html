@@ -2,29 +2,31 @@
 {% load static %}
 {% load crispy_forms_tags %}
 
+
 {% block title %}
-<title>Login</title>
+<title>Cadastro</title>
 {% endblock %}
 
 {% block content %}
 
 <div class="container">
 
-    <h3>Login</h3>
-    <p class="lead"> Informar dados</p>
+    <h3>Reset de Senha</h3>
+    <p class="lead"> Lembre-se da sua nova senha.</p>
     <hr>
-    <form action="" method="post">
-        {% csrf_token %}
-
+    <form action="{% url 'passchange' %}" method="post">{% csrf_token %}
         {{ form|crispy }}
+        <label for="username">Nova Senha</label><br>
+        <input type="hidden" id="id_target" name="target" value={{target}} >
+        <input type="text" id="id_password" name="password" value="" autofocus><br><br>
         <hr>
-        <button type="submit" class="btn btn-primary">Entrar</button>
-        <a href="{% url 'passrecovery' %}">Esqueci minha senha</a>
+        <button type="submit" id="btn_submit" class="btn btn-primary">SALVAR</button>
 
     </form>
 </div>
 
 {% endblock %}
+
 
 {% block scripts %}
 <script src="{% static 'js/jquery.mask.min.js' %}"></script>

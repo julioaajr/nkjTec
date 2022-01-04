@@ -4,7 +4,7 @@
 {% block content %}
 
 
-<h3>Clientes</h3>
+<h3>Profissionais</h3>
 <hr>
 <div class="row ml-auto">
     <div class="col-sm">
@@ -28,6 +28,7 @@
             <th>CPF</th>
             <th>E-mail</th>
             <th>Telefone</th>
+            <th>Ativo</th>
             <th>Opções</th>
         </tr>
 
@@ -37,9 +38,14 @@
             <td>{{obj.username}}</td>
             <td>{{obj.email}}</td>
             <td>{{obj.tel}}</td>
+            {% if obj.is_active %}
+            <td>Sim</td>
+            {% else %}
+            <td>Não</td>
+            {% endif %}
             <td>
                 <a href="{% url 'edit-user' obj.pk %}" class="btn btn-warning btn-sm">Editar</a>
-                <a href="{% url 'delete-user' obj.pk %}" class="btn btn-danger btn-sm">Excluir</a>
+                <a href="{% url 'delete-user' obj.pk %}" class="btn btn-danger btn-sm">Inativar</a>
             </td>
 
         </tr>

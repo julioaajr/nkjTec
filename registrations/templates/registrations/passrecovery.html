@@ -2,50 +2,40 @@
 {% load static %}
 {% load crispy_forms_tags %}
 
+
 {% block title %}
-<title>Login</title>
+<title>Cadastro</title>
 {% endblock %}
 
 {% block content %}
 
 <div class="container">
 
-    <h3>Login</h3>
-    <p class="lead"> Informar dados</p>
+    <h3>Cadastro</h3>
+    <p class="lead"> Preencha todos os campos</p>
     <hr>
-    <form action="" method="post">
-        {% csrf_token %}
-
+    <form action="{% url 'passrecovery' %}" method="post">{% csrf_token %}
         {{ form|crispy }}
+        <label for="username">Usuário (cpf)</label><br>
+        <input type="text" id="id_username" name="username" value=""><br><br>
+        <label for="email">E-mail</label><br>
+        <input type="text" id="id_email" name="email" value=""><br>
         <hr>
-        <button type="submit" class="btn btn-primary">Entrar</button>
-        <a href="{% url 'passrecovery' %}">Esqueci minha senha</a>
+        <button type="submit" id="btn_submit" class="btn btn-primary">SALVAR</button>
 
     </form>
 </div>
 
 {% endblock %}
 
+
 {% block scripts %}
 <script src="{% static 'js/jquery.mask.min.js' %}"></script>
 
 <script>
     $(document).ready(function () {
-        $("#id_created_at").prop("disabled", true);
-        $("#id_created_by").prop("disabled", true);
-
-        $("#id_appdate").mask("00/00/0000");
-        $("#id_birth").mask("00/00/0000");
-        $("#id_daydate").mask("00/00/0000");
-        $("#id_apphour").mask("00:00");
         $("#id_username").mask("000.000.000-00");
-        $("#id_cpf").mask("000.000.000-00");
-        $("#id_begin").mask("00:00");
-        $("#id_end").mask("00:00");
-        $("#id_interval").mask("009");
-        $("#id_price").mask("00.00");
-        $("#id_tel").mask("00000000000");
-        $("#id_nickname").mask("AAAAAAAAAAAAAAAAAAAA");
+
 
         $("#id_username").prop("placeholder", "000.000.000-00");
         $("#id_begin").prop("placeholder", "exemplo 08:00");
