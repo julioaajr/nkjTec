@@ -14,71 +14,6 @@ import random
 WEEKDAY = ['Segunda-feira','Terça-feira','Quarta-feira','Quinta-feira','Sexta-feira','Sábado','Domingo']
 
 ############################## VIEWS GERAIS ##############################
-@login_required
-def AllSchedules( request):
-    data = {
-        'professionals':{},
-        'feriados':{},
-        'free':{},
-    }
-    if (request.GET.get('date')):
-        data['date'] = request.GET.get('date')
-        date = Time().convertdate(request.GET.get('date'))
-    else:
-        data['date'] = datetime.today().strftime('%Y-%m-%d')
-        date = datetime.today().strftime('%d/%m/%Y')
-    data['datec'] = date
-
-    #AQUI UTILIZO PARA PASSAR PELOS STATUS USANDO OS BOTOES DA AGENDA
-    if(request.GET.get('idappointment') and request.GET.get('newstatus')):
-        appointment = Appointment.objects.get(pk = request.GET.get('idappointment'))
-        appointment.status = request.GET.get('newstatus')
-        if(request.GET.get('newstatus') == '4'):
-            appointment.payed = 'S'
-        #valida se o usuario que esta pedindo é da mesma empresa que o agendamento
-        if (request.user.master == appointment.master):
-            appointment.save()
-
-
-    schedule = []
-    busy = []
-    free = []
-    weekday = Time().convertweekday(date)
-    data['weekday'] = WEEKDAY[weekday]
-    try:
-        data['professionals'] = User.objects.filter(master = request.user.master)
-        data['professionaldefault'] = data['professionals'][0]
-        
-        if(request.GET.get('id_professional')):
-            professional = User.objects.get(id = request.GET.get('id_professional'))
-            data['professionaldefault'] = professional
-        else:
-            professional = data['professionals'][0]
-
-        data['feriados'] = DayOff.objects.filter(daydate = date).filter(professional=request.user.id).filter(is_active = True)
-        schedule = Schedule.objects.filter(master = request.user.master, professional = professional).filter(weekday=weekday).filter(is_active = True)
-        busy = Appointment.objects.filter(master = request.user.master, professional = professional, appdate = date).filter(is_active = True)
-        
-    except:
-        pass
-
-            
-    busy = list(busy)
-    busyclient = []
-    for i in schedule:
-        free += Time().FreeSchedule(i,busy)
-    for i in free:
-        app = Appointment()
-        app.apphour = i
-        app.appdate = date
-        app.professional = professional
-        app.status = ""
-        busyclient.append(app)
-    busy += busyclient
-    busy = sorted(busy,key = lambda x: x.apphour)
-    data['free']=busy
-    return render(request, 'registrations/lists/allschedules.html',data)
-
 
 @login_required
 def AllSchedulesMaster(request, master):
@@ -147,11 +82,19 @@ def AllSchedulesMaster(request, master):
 
 
 @login_required
-def MySchedule(request): #VIEW ONDE BUSCA OS HORÁRIOS DO PROFISSIONAL LOGADO.
+def AllSchedules( request):
     data = {
+        'professionals':{},
         'feriados':{},
         'free':{},
     }
+    if (request.GET.get('date')):
+        data['date'] = request.GET.get('date')
+        date = Time().convertdate(request.GET.get('date'))
+    else:
+        data['date'] = datetime.today().strftime('%Y-%m-%d')
+        date = datetime.today().strftime('%d/%m/%Y')
+    data['datec'] = date
 
     #AQUI UTILIZO PARA PASSAR PELOS STATUS USANDO OS BOTOES DA AGENDA
     if(request.GET.get('idappointment') and request.GET.get('newstatus')):
@@ -162,6 +105,65 @@ def MySchedule(request): #VIEW ONDE BUSCA OS HORÁRIOS DO PROFISSIONAL LOGADO.
         #valida se o usuario que esta pedindo é da mesma empresa que o agendamento
         if (request.user.master == appointment.master):
             appointment.save()
+
+
+    schedule = []
+    busy = []
+    free = []
+    weekday = Time().convertweekday(date)
+    data['weekday'] = WEEKDAY[weekday]
+    try:
+        data['professionals'] = User.objects.filter(master = request.user.master)
+        data['professionaldefault'] = data['professionals'][0]
+        
+        if(request.GET.get('id_professional')):
+            professional = User.objects.get(id = request.GET.get('id_professional'))
+            data['professionaldefault'] = professional
+        else:
+            professional = data['professionals'][0]
+
+        data['feriados'] = DayOff.objects.filter(daydate = date).filter(professional=request.user.id).filter(is_active = True)
+        schedule = Schedule.objects.filter(master = request.user.master, professional = professional).filter(weekday=weekday).filter(is_active = True)
+        busy = Appointment.objects.filter(master = request.user.master, professional = professional, appdate = date).filter(is_active = True)
+        
+    except:
+        pass
+
+            
+    busy = list(busy)
+    busyclient = []
+    for i in schedule:
+        free += Time().FreeSchedule(i,busy)
+    for i in free:
+        app = Appointment()
+        app.apphour = i
+        app.appdate = date
+        app.professional = professional
+        app.status = ""
+        busyclient.append(app)
+    busy += busyclient
+    busy = sorted(busy,key = lambda x: x.apphour)
+    data['free']=busy
+    return render(request, 'registrations/lists/allschedules.html',data)
+
+
+@login_required
+def MySchedule(request): #VIEW ONDE BUSCA OS HORÁRIOS DO PROFISSIONAL LOGADO.
+    data = {
+        'feriados':{},
+        'free':{},
+    }
+     #AQUI UTILIZO PARA PASSAR PELOS STATUS USANDO OS BOTOES DA AGENDA
+    if(request.GET.get('idappointment') and request.GET.get('newstatus')):
+        appointment = Appointment.objects.get(pk = request.GET.get('idappointment'))
+        appointment.status = request.GET.get('newstatus')
+        if(request.GET.get('newstatus') == '4'):
+            appointment.payed = 'S'
+        #valida se o usuario que esta pedindo é da mesma empresa que o agendamento
+        if (request.user.master == appointment.master):
+            appointment.save()
+
+    print('teste')
 
     if (request.GET.get('date')):
         data['date'] = request.GET.get('date')
