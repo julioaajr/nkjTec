@@ -15,8 +15,6 @@
     <p class="lead"> Preencha todos os campos {{request.get.get.id_appdate}}</p>
     <hr>
     <form action="" method="post">{% csrf_token %}
-        <input id="my_checkbox" type="checkbox" text = ''/>
-        <label class="form-check-label" for="my_checkbox">Novo Cliente</label>
 
         {{ form|crispy }}
         <hr>
@@ -32,25 +30,12 @@
 <script src="{% static 'js/jquery.mask.min.js' %}"></script>
 
 <script>
-
-
-    
     $(document).ready(function () {
-        
-        $('#my_checkbox').click(function () {
-            if ($(this).is(':checked')) {
-                alert("Checked");
-                $("#id_client").css("display", "none");
-            } else {
-                alert('unchecked');
-                $("#id_client").css("display", "block");
-            }
-        });
 
-        $('#id_client').select2({
-            placeholder: "Escolha um Cliente."
-        });
 
+
+
+        $('#id_client').select2();
         if ($("#id_appdate").prop('value') != "") {
             $("#id_appdate").prop("disabled", true);
 
@@ -84,16 +69,6 @@
             $("#id_appdate").prop("disabled", false);
             $("#id_client").prop("disabled", false);
         }
-
-        if ($("#id_client").prop('value') != "" && $("#id_procedure").prop('value') != "" && $('#my_checkbox').prop('checked') == true) {
-            $("#id_professional").prop("disabled", false);
-            $("#id_apphour").prop("disabled", false);
-            $("#id_appdate").prop("disabled", false);
-            $("#id_client").prop("disabled", false);
-        }
-
-
-
     };
 
 

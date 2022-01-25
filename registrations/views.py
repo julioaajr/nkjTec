@@ -163,8 +163,6 @@ def MySchedule(request): #VIEW ONDE BUSCA OS HORÁRIOS DO PROFISSIONAL LOGADO.
         if (request.user.master == appointment.master):
             appointment.save()
 
-    print('teste')
-
     if (request.GET.get('date')):
         data['date'] = request.GET.get('date')
         date = Time().convertdate(request.GET.get('date'))
@@ -275,7 +273,7 @@ class AppointmentCreate(LoginRequiredMixin, CreateView):
     #login_url = reverse_lazy('')
     #fields = '__all__'
     model = Appointment
-    fields = ['appdate','apphour','professional','client','procedure','status','payed' ]
+    fields =  ['client','appdate','apphour','professional','status','procedure','payed' ]
     template_name = 'registrations/forms_appointment.html'
     success_url = reverse_lazy('myschedule')
 
@@ -302,10 +300,12 @@ class AppointmentCreate(LoginRequiredMixin, CreateView):
         return form
 
     def form_valid(self, form):
+        print('testeformvalid')
         form.instance.created_by = self.request.user
         form.instance.master = self.request.user.master
         url = super().form_valid(form)
         return url
+
 
 
 class ScheduleCreate(LoginRequiredMixin, CreateView):
@@ -397,8 +397,8 @@ class ProcedureUpdate(LoginRequiredMixin, UpdateView):
 class AppointmentUpdate(LoginRequiredMixin, UpdateView):
     login_url = reverse_lazy('login')
     model = Appointment
-    fields =  ['appdate','apphour','client','professional','status','procedure','payed' ]
-    template_name = 'registrations/forms_appointment.html'
+    fields =  ['client','appdate','apphour','professional','status','procedure','payed' ]
+    template_name = 'registrations/update_appointment.html'
     success_url = reverse_lazy('myschedule')
 
     def get_object(self, queryset= None):
