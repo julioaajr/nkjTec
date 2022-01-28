@@ -300,11 +300,39 @@ class AppointmentCreate(LoginRequiredMixin, CreateView):
         return form
 
     def form_valid(self, form):
-        print('testeformvalid')
+        if(self.request.POST.get('my_checkbox') == 'on'):
+            newclient = Client()
+            newclient.name = self.request.POST.get('id_newclient')
+            newclient.tel = self.request.POST.get('id_tel')
+            newclient.master = self.request.user.master
+            newclient.created_by = self.request.user
+            newclient.save()
+            form.instance.client = newclient
         form.instance.created_by = self.request.user
         form.instance.master = self.request.user.master
         url = super().form_valid(form)
         return url
+
+    ''' TENTATIVA DE SOBRESCREEVER O POST
+    def post(self, request, *args, **kwargs):
+        if(self.request.POST.get('my_checkbox') == 'on'):
+            
+            print('testeposstttt')
+            newclient = Client()
+            newclient.name = self.request.POST.get('id_newclient')
+            newclient.tel = self.request.POST.get('id_tel')
+            newclient.master = self.request.user.master
+            newclient.created_by = self.request.user
+            newclient.save()
+            form.instance.client = newclient
+        form = self.get_form()
+        print(form.instance)
+        if form.is_valid():
+            return self.form_valid(form)
+        else:
+            return self.form_invalid(form)
+    '''
+
 
 
 
