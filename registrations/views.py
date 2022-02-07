@@ -15,8 +15,9 @@ WEEKDAY = ['Segunda-feira','Terça-feira','Quarta-feira','Quinta-feira','Sexta-f
 
 ############################## VIEWS GERAIS ##############################
 
-@login_required
-def AllSchedulesMaster(request, master):
+
+def AllSchedulesMaster(request, nickmaster):
+    print(nickmaster)
     data = {
         'professionals':{},
         'feriados':{},
@@ -30,24 +31,14 @@ def AllSchedulesMaster(request, master):
         date = datetime.today().strftime('%d/%m/%Y')
     data['datec'] = date
 
-    #AQUI UTILIZO PARA PASSAR PELOS STATUS USANDO OS BOTOES DA AGENDA
-    if(request.GET.get('idappointment') and request.GET.get('newstatus')):
-        appointment = Appointment.objects.get(pk = request.GET.get('idappointment'))
-        appointment.status = request.GET.get('newstatus')
-        if(request.GET.get('newstatus') == '4'):
-            appointment.payed = 'S'
-        #valida se o usuario que esta pedindo é da mesma empresa que o agendamento
-        if (request.user.master == appointment.master):
-            appointment.save()
-
-
     schedule = []
     busy = []
     free = []
     weekday = Time().convertweekday(date)
     data['weekday'] = WEEKDAY[weekday]
     try:
-        data['professionals'] = User.objects.filter(master = request.user.master)
+        data['master'] = User.objects.get(nickname = nickmaster)
+        data['professionals'] = User.objects.filter(master = data['master'])
         data['professionaldefault'] = data['professionals'][0]
         
         if(request.GET.get('id_professional')):
@@ -57,7 +48,7 @@ def AllSchedulesMaster(request, master):
             professional = data['professionals'][0]
 
         data['feriados'] = DayOff.objects.filter(daydate = date).filter(professional=request.user.id).filter(is_active = True)
-        schedule = Schedule.objects.filter(master = request.user.master, professional = professional).filter(weekday=weekday).filter(is_active = True)
+        schedule = Schedule.objects.filter(master = request.user.master, professiona__in = data['professionals']).filter(weekday=weekday).filter(is_active = True)
         busy = Appointment.objects.filter(master = request.user.master, professional = professional, appdate = date).filter(is_active = True)
         
     except:
@@ -67,6 +58,7 @@ def AllSchedulesMaster(request, master):
     busy = list(busy)
     busyclient = []
     for i in schedule:
+        i.professional
         free += Time().FreeSchedule(i,busy)
     for i in free:
         app = Appointment()
@@ -75,7 +67,7 @@ def AllSchedulesMaster(request, master):
         app.professional = professional
         app.status = ""
         busyclient.append(app)
-    busy += busyclient
+    #busy += busyclient
     busy = sorted(busy,key = lambda x: x.apphour)
     data['free']=busy
     return render(request, 'registrations/lists/allschedulesmaster.html',data)
@@ -461,7 +453,7 @@ class DayOffUpdate(LoginRequiredMixin, UpdateView):
 class UserUpdate(LoginRequiredMixin, UpdateView):
     login_url = reverse_lazy('login')
     model = User
-    fields = ['first_name','username','email','tel','is_active']
+    fields = ['first_name','username','email','tel','nickname','is_active']
     template_name = 'registrations/userupdate.html'
     success_url = reverse_lazy('list-user')
 

@@ -7,7 +7,7 @@ urlpatterns =[
     #Views gerais
     path('myschedule/', MySchedule, name ='myschedule'),
     path('allschedules/', AllSchedules, name ='allschedules'),
-    path('allschedules/<str:master>/', AllSchedulesMaster, name ='allschedules-master'),
+    path('allschedules/<str:nickmaster>/', AllSchedulesMaster, name ='allschedules-master'),
     path('passrecovery/', PassRecovery, name ='passrecovery'),
     path('passchange/', PassChange, name ='passchange'),
     #cadastrar

@@ -28,15 +28,18 @@
     </div>
     {% endfor %}
 </div>
-<div class="table-responsive">
-    <table class="table table-striped table-sm">
-        <tr>
-            <th>Hora</th>
-            <th>Cliente</th>
-            <th>Whats</th>
-            <th>Opções</th>
-        </tr>
-
+<div>
+    {% for prof in professionals %}
+        <p>{{prof}}</p>
+        
+    </div>
+    <div class="table-responsive">
+        <table class="table table-striped table-sm">
+            <tr>
+                <th>{{prof}}</th>
+            </tr>
+            {% endfor %}
+            
         {% for obj in free %}
         <tr title="{{obj.client.first_name}} | {{obj.procedure}}">
             {%if obj.status != '4'%}
