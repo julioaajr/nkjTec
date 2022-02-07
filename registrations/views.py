@@ -31,42 +31,34 @@ def AllSchedulesMaster(request, nickmaster):
         date = datetime.today().strftime('%d/%m/%Y')
     data['datec'] = date
 
+    
+    busyclient = []
     schedule = []
     busy = []
     free = []
+    
     weekday = Time().convertweekday(date)
     data['weekday'] = WEEKDAY[weekday]
     try:
         data['master'] = User.objects.get(nickname = nickmaster)
         data['professionals'] = User.objects.filter(master = data['master'])
-        data['professionaldefault'] = data['professionals'][0]
-        
-        if(request.GET.get('id_professional')):
-            professional = User.objects.get(id = request.GET.get('id_professional'))
-            data['professionaldefault'] = professional
-        else:
-            professional = data['professionals'][0]
-
-        data['feriados'] = DayOff.objects.filter(daydate = date).filter(professional=request.user.id).filter(is_active = True)
-        schedule = Schedule.objects.filter(master = request.user.master, professiona__in = data['professionals']).filter(weekday=weekday).filter(is_active = True)
-        busy = Appointment.objects.filter(master = request.user.master, professional = professional, appdate = date).filter(is_active = True)
-        
+        for i in data['professionals']:
+            data['feriados'] = DayOff.objects.filter(daydate = date).filter(professional=request.user.id).filter(is_active = True)
+            schedule = Schedule.objects.filter(master = request.user.master, professiona__in = data['professionals']).filter(weekday=weekday).filter(is_active = True)
+            busy = Appointment.objects.filter(master = request.user.master, professional = i, appdate = date).filter(is_active = True)            
+            busy = list(busy)
+            for i in schedule:
+                i.professional
+                free += Time().FreeSchedule(i,busy)
+            for i in free:
+                app = Appointment()
+                app.apphour = i
+                app.appdate = date
+                app.professional = professional
+                app.status = ""
+                busyclient.append(app)
     except:
         pass
-
-            
-    busy = list(busy)
-    busyclient = []
-    for i in schedule:
-        i.professional
-        free += Time().FreeSchedule(i,busy)
-    for i in free:
-        app = Appointment()
-        app.apphour = i
-        app.appdate = date
-        app.professional = professional
-        app.status = ""
-        busyclient.append(app)
     #busy += busyclient
     busy = sorted(busy,key = lambda x: x.apphour)
     data['free']=busy
