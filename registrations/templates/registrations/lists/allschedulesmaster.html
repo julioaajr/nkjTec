@@ -18,7 +18,8 @@
         </form>
     </div> -->
     <div class="col-sm px-2">
-        <a href="{% url 'create-appointment' %}?appdate={{datec}}&professional={{free.1.professional.id}}" class="btn btn-success">Encaixe</a>
+        <a href="{% url 'create-appointment' %}?appdate={{datec}}&professional={{free.1.professional.id}}"
+            class="btn btn-success">Encaixe</a>
     </div>
 </div>
 <div class="row pt-2 pb-auto">
@@ -29,56 +30,20 @@
     {% endfor %}
 </div>
 <div>
+</div>
+<div class="table-responsive">
     {% for prof in professionals %}
-        <p>{{prof}}</p>
-        
-    </div>
-    <div class="table-responsive">
-        <table class="table table-striped table-sm">
-            <tr>
-                <th>{{prof}}</th>
-            </tr>
-            {% endfor %}
-            
-        {% for obj in free %}
-        <tr title="{{obj.client.first_name}} | {{obj.procedure}}">
-            {%if obj.status != '4'%}
-            <td>{{obj.apphour}}</td>
-
-            <td>
-                {% if obj.pk %}
-                {{obj.client.first_name}}
-                {%else%}
-
-                <a href="{% url 'create-appointment' %}?appdate={{obj.appdate}}&apphour={{obj.apphour}}&professional={{obj.professional.id}}" 
-                
-                class="btn btn-success btn-sm">Inserir</a>
-                {% endif%}
-            </td>
-            <td><a href="https://api.whatsapp.com/send?phone=55{{obj.client.tel}}&text=Olá temos um Agendamento dia {{obj.appdate}} as {{obj.apphour}} com {{obj.professional.first_name}}"
-                    target="_blank">
-                    {{obj.client.tel}}</a>
-            </td>
-
-            <td>
-                {% if obj.pk %}
-                <a href="{% url 'edit-appointment' obj.pk %}" class="btn btn-warning btn-sm">Editar</a>
-                <a href="{% url 'delete-appointment' obj.pk %}" class="btn btn-danger btn-sm">Excluir</a>
-                {%else%}
-                {% endif%}
-            </td>
-
-        </tr>
-        {%endif%}
-        {% empty %}
+    <table class="table table-striped table-sm">
         <tr>
-            <td colspan="3">
-                Olá, você não possuí cadastro de <a href="{% url 'list-schedule' %}">HORÁRIOS</a> adicione para
-                completar sua agenda
-            </td>
+            <th>{{prof}} </th>
+            {% for app in free %}
+                {{app.hour}}
+                {% if app.professional == prof.id%}
+                    {{app}}
+                {% endif%}
+            {% endfor %}
         </tr>
         {% endfor %}
-
     </table>
 </div>
 {% endblock %}

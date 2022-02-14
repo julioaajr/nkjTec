@@ -1,3 +1,4 @@
+from cgi import print_directory
 from django.contrib.auth.decorators import login_required
 from django.http import request
 from django.http.response import HttpResponseRedirect
@@ -43,25 +44,29 @@ def AllSchedulesMaster(request, nickmaster):
         data['master'] = User.objects.get(nickname = nickmaster)
         data['professionals'] = User.objects.filter(master = data['master'])
         for i in data['professionals']:
-            data['feriados'] = DayOff.objects.filter(daydate = date).filter(professional=request.user.id).filter(is_active = True)
-            schedule = Schedule.objects.filter(master = request.user.master, professiona__in = data['professionals']).filter(weekday=weekday).filter(is_active = True)
-            busy = Appointment.objects.filter(master = request.user.master, professional = i, appdate = date).filter(is_active = True)            
+            print('------------------------------------')
+            data['feriados'] = DayOff.objects.filter(daydate = date).filter(professional=i).filter(is_active = True)
+            schedule = Schedule.objects.filter(professional = i).filter(weekday=weekday).filter(is_active = True)
+            print(f'Schedule --- {schedule}')
+            busy = Appointment.objects.filter(professional = i, appdate = date).filter(is_active = True)            
             busy = list(busy)
-            for i in schedule:
-                i.professional
-                free += Time().FreeSchedule(i,busy)
-            for i in free:
-                app = Appointment()
-                app.apphour = i
-                app.appdate = date
-                app.professional = professional
-                app.status = ""
-                busyclient.append(app)
+            print(f'Busyy ----- {busy}')
+            for j in schedule:
+                free += Time().FreeSchedule(j,busy)
+                print(f'free ---- {free}')
+                for k in free:
+                    app = Appointment()
+                    app.apphour = k
+                    app.appdate = date
+                    app.professional = i
+                    app.status = ""
+                    busyclient.append(app)
+                    print(f'busyclient ---- {busyclient}')
     except:
         pass
     #busy += busyclient
-    busy = sorted(busy,key = lambda x: x.apphour)
-    data['free']=busy
+    busyclient = sorted(busyclient,key = lambda x: x.apphour)
+    data['free']=busyclient
     return render(request, 'registrations/lists/allschedulesmaster.html',data)
 
 
