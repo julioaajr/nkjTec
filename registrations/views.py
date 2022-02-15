@@ -61,7 +61,9 @@ def AllSchedulesMaster(request, nickmaster):
                     app.professional = i
                     app.status = ""
                     busyclient.append(app)
-                    print(f'busyclient ---- {busyclient}')
+                for t in busyclient:
+                    print(t.hour)
+                    ##teste 
     except:
         pass
     #busy += busyclient
