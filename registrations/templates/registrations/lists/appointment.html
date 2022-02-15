@@ -27,9 +27,8 @@
             <th>Profissional</th>
             <th>Status</th>
             <th>Procedimento</th>
-            <th>Pagamento</th>
+            <th>Pago</th>
             <th>Total</th>
-            <th>Ativo</th>
             <th>Opções</th>
         </tr>
 
@@ -37,13 +36,12 @@
         <tr>
             <td>{{obj.appdate}}</td>
             <td>{{obj.apphour}}</td>
-            <td>{{obj.client.first_name}}</td>
+            <td>{{obj.client.name}}</td>
             <td>{{obj.professional.first_name.split.0}}</td>
             <td>{{obj.get_status_display}}</td>
             <td>{{obj.procedure}}</td>
             <td>{{obj.get_payed_display}}</td>
             <td>{{obj.total}}</td>
-            <td>{{obj.active}}</td>
 
             <td>
                 <a href="{% url 'edit-appointment' obj.pk %}" class="btn btn-warning btn-sm">Editar</a>
