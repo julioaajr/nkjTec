@@ -25,6 +25,7 @@
             </form>
         </div>
         <div class='col'> 
+            <h4>Agendamentos do Cliente</h4>
             {% for app in appointments%}
                 <p>data {{app.appdate}} | Procedimento {{app.procedure}} | Pago {{app.get_payed_display}}</p>
             {% endfor %}
