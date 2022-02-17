@@ -67,8 +67,9 @@ class Appointment(models.Model):
     created_at = models.DateTimeField(auto_now=True, verbose_name="Criado em")
     master = models.ForeignKey(User, models.DO_NOTHING, blank = True, null = True, related_name="masterappointment", verbose_name="Master")
     created_by = models.ForeignKey(User, models.DO_NOTHING, blank = True, null = True, related_name="createdbyappointmen", verbose_name="Criado por")
+    date = models.DateField(null=True,blank=True)
     def __str__(self):
-        return (f"Nome: {self.client} | Data: {self.appdate} | Horário: {self.apphour}")
+        return (f"Nome: {self.client} | Data: {self.appdate} | Horário: {self.apphour} | Date: {self.date}")
 
 
     def get_apphour(self):

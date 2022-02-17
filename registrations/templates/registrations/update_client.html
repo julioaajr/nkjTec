@@ -1,0 +1,73 @@
+{% extends 'pages/template.html' %}
+{% load static %}
+{% load crispy_forms_tags %}
+
+
+{% block title %}
+<title>Cliente</title>
+{% endblock %}
+
+{% block content %}
+
+<div class="container">
+    <h3>Cliente</h3>
+    <hr>
+</div>
+
+<div class='container'>
+    <div class='row'>
+        <div class='col'>
+            <form action="" method="post">{% csrf_token %}
+                {{ form|crispy }}
+                <hr>
+                <button type="submit" id="btn_submit" class="btn btn-primary">SALVAR</button>
+
+            </form>
+        </div>
+        <div class='col'> 
+            {% for app in appointments%}
+                <p>data {{app.appdate}} | Procedimento {{app.procedure}} | Pago {{app.get_payed_display}}</p>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+</div>
+
+
+{% endblock %}
+
+
+{% block scripts %}
+<script src="{% static 'js/jquery.mask.min.js' %}"></script>
+
+<script>
+    $(document).ready(function () {
+        $("#id_created_at").prop("disabled", true);
+        $("#id_created_by").prop("disabled", true);
+        $("#id_appdate").mask("00/00/0000");
+        $("#id_birth").mask("00/00/0000");
+        $("#id_daydate").mask("00/00/0000");
+        $("#id_apphour").mask("00:00");
+        $("#id_username").mask("000.000.000-00");
+        $("#id_cpf").mask("000.000.000-00");
+        $("#id_begin").mask("00:00");
+        $("#id_end").mask("00:00");
+        $("#id_interval").mask("009");
+        $("#id_price").mask("00.00");
+        $("#id_tel").mask("00000000000");
+        $("#id_nickname").mask("AAAAAAAAAAAAAAAAAAAA");
+
+        $("#id_username").prop("placeholder", "000.000.000-00");
+        $("#id_begin").prop("placeholder", "exemplo 08:00");
+        $("#id_end").prop("placeholder", "exemplo 18:00");
+        $("#id_tel").prop("placeholder", "exemplo 43999999999");
+        $("#id_interval").prop("placeholder", "exemplo 30");
+        $("#id_price").prop("placeholder", "exemplo 30,00");
+        document.getElementById("hint_id_username").textContent = "Informe o CPF";
+
+    });
+
+</script>
+
+
+{% endblock %}

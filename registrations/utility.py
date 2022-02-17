@@ -14,7 +14,11 @@ class Time:
 
     def convertdate(self,dates):
         dates = dates.split("-")
-        return "{}/{}/{}".format(dates[2],dates[1],dates[0])
+        return (f"{dates[2]}/{dates[1]}/{dates[0]}")
+
+    def convertdateBRtoUS(self,dates):
+        dates = dates.split("/")
+        return datetime(int(dates[2]),int(dates[1]),int(dates[0]))
     
 
     def convertehora(self, hora):

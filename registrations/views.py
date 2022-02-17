@@ -1,3 +1,4 @@
+from asyncio.windows_events import NULL
 from cgi import print_directory
 from django.contrib.auth.decorators import login_required
 from django.http import request
@@ -166,6 +167,11 @@ def MySchedule(request): #VIEW ONDE BUSCA OS HORÁRIOS DO PROFISSIONAL LOGADO.
         data['feriados'] = DayOff.objects.filter(daydate = date).filter(professional=request.user.id)
         schedule = Schedule.objects.filter(professional=request.user.id).filter(weekday=weekday).filter(is_active = True)
         busy = Appointment.objects.filter(professional=request.user.id).filter(appdate = date).filter(is_active = True)
+        today = datetime.today()
+        tomorrow =  today + timedelta(minutes = 500)
+        print(f' asqui {tomorrow}')
+        testapp = Appointment.objects.filter(professional = request.user).filter(date__isnull =  True).count()
+        print(testapp)
     except:
         pass
 
@@ -259,7 +265,7 @@ class AppointmentCreate(LoginRequiredMixin, CreateView):
     #login_url = reverse_lazy('')
     #fields = '__all__'
     model = Appointment
-    fields =  ['client','appdate','apphour','professional','status','procedure','payed' ]
+    fields =  ['client','appdate','apphour','professional','status','procedure','payed']
     template_name = 'registrations/forms_appointment.html'
     success_url = reverse_lazy('myschedule')
 
@@ -294,6 +300,7 @@ class AppointmentCreate(LoginRequiredMixin, CreateView):
             newclient.created_by = self.request.user
             newclient.save()
             form.instance.client = newclient
+        form.instance.date = Time().convertdateBRtoUS(self.request.POST.get('appdate'))
         form.instance.created_by = self.request.user
         form.instance.master = self.request.user.master
         url = super().form_valid(form)
@@ -411,7 +418,7 @@ class ProcedureUpdate(LoginRequiredMixin, UpdateView):
 class AppointmentUpdate(LoginRequiredMixin, UpdateView):
     login_url = reverse_lazy('login')
     model = Appointment
-    fields =  ['client','appdate','apphour','professional','status','procedure','payed' ]
+    fields =  ['client','appdate','apphour','professional','status','procedure','payed','date' ]
     template_name = 'registrations/update_appointment.html'
     success_url = reverse_lazy('myschedule')
 
@@ -460,12 +467,19 @@ class ClientUpdate(LoginRequiredMixin, UpdateView):
     login_url = reverse_lazy('login')
     model = Client
     fields = ['name','tel','birth','cpf','email','obs']
-    template_name = 'registrations/forms.html'
+    template_name = 'registrations/update_client.html'
     success_url = reverse_lazy('list-client')
 
     def get_object(self, queryset= None):
         self.object = get_object_or_404(Client, pk=self.kwargs['pk'], master = self.request.user.master)
         return self.object
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['appointments'] = Appointment.objects.filter(client__id = self.kwargs['pk'])
+        print(context['appointments'])
+
+        return context
 
 
 #############################  DELETE  #############################
