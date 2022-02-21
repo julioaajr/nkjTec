@@ -47,6 +47,7 @@
             <th>Whats</th>
             <th>Status</th>
             <th>Procedimento</th>
+            <th>Valor</th>
             <th>Pago</th>
             <th>Opções</th>
         </tr>
@@ -69,8 +70,8 @@
                     {{obj.client.tel}}</a>
             </td>
             <td>{{obj.get_status_display}}</td>
-            <td>{{obj.procedure}}</td>
-
+            <td>{{obj.procedure.name}}</td>
+            <td>{{obj.total}}</td>
             <td>{{obj.get_payed_display}}</td>
 
             <td>

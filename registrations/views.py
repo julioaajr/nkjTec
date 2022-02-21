@@ -301,6 +301,7 @@ class AppointmentCreate(LoginRequiredMixin, CreateView):
             newclient.save()
             form.instance.client = newclient
         form.instance.date = Time().convertdateBRtoUS(self.request.POST.get('appdate'))
+        form.instance.procedure.total = form.instance.procedure.price
         form.instance.created_by = self.request.user
         form.instance.master = self.request.user.master
         url = super().form_valid(form)
@@ -418,7 +419,7 @@ class ProcedureUpdate(LoginRequiredMixin, UpdateView):
 class AppointmentUpdate(LoginRequiredMixin, UpdateView):
     login_url = reverse_lazy('login')
     model = Appointment
-    fields =  ['client','appdate','apphour','professional','status','procedure','payed','date' ]
+    fields =  ['client','appdate','apphour','professional','status','procedure','total','payed']
     template_name = 'registrations/update_appointment.html'
     success_url = reverse_lazy('myschedule')
 
@@ -477,8 +478,6 @@ class ClientUpdate(LoginRequiredMixin, UpdateView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['appointments'] = Appointment.objects.filter(client__id = self.kwargs['pk'])
-        print(context['appointments'])
-
         return context
 
 

@@ -10,17 +10,23 @@
 {% block content %}
 
 <div class="container">
-
     <h3>Perfil</h3>
     <hr>
-    <p>No lugar do primeiro nome coloque o nome completo</p>
-    <form action="" method="post">{% csrf_token %}
-        {{ form|crispy }}
-        <hr>
-        <button type="submit" id="btn_submit" class="btn btn-primary">SALVAR</button>
-        <a href="{% url 'passchange'%}?target={{user.pk}}"> Alterar Senha</a>
-        
-    </form>
+</div>
+<div class="container">
+    <div class="row">
+        <div class="col">
+            <form action="" method="post">{% csrf_token %}
+                {{ form|crispy }}
+                <hr>
+                <button type="submit" id="btn_submit" class="btn btn-primary">SALVAR</button>
+                <a href="{% url 'passchange'%}?target={{user.pk}}"> Alterar Senha</a>
+            </form>
+        </div>
+        <div class="col">
+            <p>www.nkjtec.com.br/allshedules/{{object.nickname}}</p>
+        </div>
+    </div>
 </div>
 
 {% endblock %}
