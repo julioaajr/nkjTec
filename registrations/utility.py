@@ -11,7 +11,7 @@ class Time:
         dates = datetime(int(dates[2]),int(dates[1]),int(dates[0]))
         return (dates.weekday())
 
-
+    #converte a data de yyyy-mm-dd para dd/mm/aaaa
     def convertdate(self,dates):
         dates = dates.split("-")
         return (f"{dates[2]}/{dates[1]}/{dates[0]}")

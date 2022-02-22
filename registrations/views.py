@@ -25,6 +25,9 @@ def AllSchedulesMaster(request, nickmaster):
         'feriados':{},
         'free':{},
     }
+
+    #data['date'] formato yyyy-mm-dddd
+    #date formato dd/mm/aaaa
     if (request.GET.get('date')):
         data['date'] = request.GET.get('date')
         date = Time().convertdate(request.GET.get('date'))

@@ -45,8 +45,7 @@
 
             {% for app in free %}
             {% if app.professional.id == prof.id%}
-
-            <button type="button" class="btn btn-success  btn-sm mt-1">{{app.apphour}}</button>
+            <a class="btn btn-success mt-1" href="https://api.whatsapp.com/send?phone=55{{prof.master.tel}}&text=Olá Gostaria deste horario!! %0A DIA: {{datec}} %0A HORA: {{app.apphour}} %0A PROFISSIONAL: {{prof.first_name.split.0}} | {{prof.nickname}}">{{app.apphour}}</a>
             {% endif%}
             {% endfor %}
         </div>
