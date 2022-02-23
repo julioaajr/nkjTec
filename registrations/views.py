@@ -46,13 +46,18 @@ def AllSchedulesMaster(request, nickmaster):
     data['weekday'] = WEEKDAY[weekday]
     try:
         data['master'] = User.objects.get(nickname = nickmaster)
-        data['professionals'] = User.objects.filter(master = data['master'])
+        data['master'].access_schedules +=1
+        data['master'].save()
+        if ( data['master'].is_master == True):
+            data['professionals'] = User.objects.filter(master = data['master'])
+        else:
+            data['professionals'] = User.objects.filter(nickname = nickmaster)
     except:
         pass
     for i in data['professionals']:
         try:
             data['feriados'] = DayOff.objects.filter(daydate = date).filter(professional=i).filter(is_active = True)
-            schedule = Schedule.objects.filter(professional = i).filter(weekday=weekday).filter(is_active = True)
+            schedule = Schedule.objects.filter(professional = i).filter(weekday=weekday).filter(is_active = True).filter(is_shared = 'S')
             busy = Appointment.objects.filter(professional = i, appdate = date).filter(is_active = True)            
             busy = list(busy)
         except:
@@ -336,7 +341,7 @@ class AppointmentCreate(LoginRequiredMixin, CreateView):
 class ScheduleCreate(LoginRequiredMixin, CreateView):
     login_url = reverse_lazy('login')
     model = Schedule
-    fields = ['professional', 'begin', 'end','interval','weekday']
+    fields = ['professional', 'begin', 'end','interval','weekday','is_shared']
     template_name = 'registrations/forms.html'
     success_url = reverse_lazy('list-schedule')
 
@@ -434,7 +439,7 @@ class AppointmentUpdate(LoginRequiredMixin, UpdateView):
 class ScheduleUpdate(LoginRequiredMixin, UpdateView):
     login_url = reverse_lazy('login')
     model = Schedule
-    fields = ['professional', 'begin', 'end','interval','weekday']
+    fields = ['professional', 'begin', 'end','interval','weekday','is_shared']
     template_name = 'registrations/forms.html'
     success_url = reverse_lazy('list-schedule')
 

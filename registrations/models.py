@@ -77,6 +77,10 @@ class Appointment(models.Model):
         
 
 class Schedule(models.Model):
+    SHARED = (
+        ('N', 'Não'),
+        ('S', 'Sim'),
+    )
     WEEKDAY = (
         ('0', 'Segunda-feira'),
         ('1', 'Terça-feira'),
@@ -95,6 +99,7 @@ class Schedule(models.Model):
     created_at = models.DateTimeField(auto_now=True, verbose_name="Criado em")
     master = models.ForeignKey(User, models.DO_NOTHING, blank = True, null = True, related_name="masterschedule", verbose_name="Master")
     created_by = models.ForeignKey(User, models.DO_NOTHING, blank = True, null = True, related_name="createdbyschedule", verbose_name="Criado por")
+    is_shared = models.CharField(max_length=1, choices=SHARED,default='S', verbose_name="Compartilhar na Agenda Online")
 
     def __str__(self):
         return f"Profissional: {self.professional.first_name} Begin: {self.begin} \nEnd: {self.end} \nInterval: " + str(self.interval)
