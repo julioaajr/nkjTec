@@ -38,7 +38,6 @@
         $("#id_birth").mask("00/00/0000");
         $("#id_daydate").mask("00/00/0000");
         $("#id_apphour").mask("00:00");
-        $("#id_username").mask("000.000.000-00");
         $("#id_cpf").mask("000.000.000-00");
         $("#id_begin").mask("00:00");
         $("#id_end").mask("00:00");
@@ -46,6 +45,14 @@
         $("#id_price").mask("00.00");
         $("#id_tel").mask("00000000000");
         $("#id_nickname").mask("AAAAAAAAAAAAAAAAAAAA");
+        var options = {
+            onKeyPress: function (cpf, ev, el, op) {
+                var masks = ['000.000.000-000', '00.000.000/0000-00'];
+                $("#id_username").mask((cpf.length > 14) ? masks[1] : masks[0], op);
+            }
+        }
+
+        $("#id_username").length > 11 ?  $("#id_username").mask('00.000.000/0000-00', options) :  $("#id_username").mask('000.000.000-00#', options);
 
         $("#id_username").prop("placeholder", "000.000.000-00");
         $("#id_begin").prop("placeholder", "exemplo 08:00");

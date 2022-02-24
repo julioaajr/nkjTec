@@ -17,23 +17,29 @@
     <div class="row">
         <div class="col">
             <form action="" method="post">{% csrf_token %}
-                {{ form|crispy }}
-                <hr>
                 <button type="submit" id="btn_submit" class="btn btn-primary">SALVAR</button>
                 <a href="{% url 'passchange'%}?target={{user.pk}}"> Alterar Senha</a>
+                <hr>
+                {{ form|crispy }}
             </form>
         </div>
         <div class="col">
-            <div class = "row">
-                Acessos Agenda Online: {{object.access_schedules}}
+            <div class = "row mt-2">
+                <h4>TOTAL de acessos na Agenda Online: <b>{{object.access_schedules}}</b></h4>
             </div>
-            <div class = "row">
-                <p>www.nkjtec.com.br/allschedules/{{object.nickname}}</p>
+            <div class = "row mt-2">
+                <h4>Link para Agenda Online do Profissional</h4>
+                <a href="{% url 'allschedules-master' object.nickname%}">Agenda Profissional</a>
+                <hr>
+            </div>
+            <div class = "row mt-2">
+                <h4>Link para Agenda Online do Estabelecimento</h4>
+                <a href="{% url 'allschedules-master' object.master.nickname%}">Agenda Estabelecimento</a>
             </div>
         </div>
     </div>
-</div>
 
+</div>
 {% endblock %}
 
 
@@ -44,10 +50,21 @@
     $(document).ready(function () {
         $("#id_birth").mask("00/00/0000");
         $("#id_apphour").mask("00:00");
-        $("#id_username").mask("000.000.000-00");
+
+        var options = {
+            onKeyPress: function (cpf, ev, el, op) {
+                var masks = ['000.000.000-000', '00.000.000/0000-00'];
+                $("#id_username").mask((cpf.length > 14) ? masks[1] : masks[0], op);
+            }
+        }
+
+        $("#id_username").length > 11 ?  $("#id_username").mask('00.000.000/0000-00', options) :  $("#id_username").mask('000.000.000-00#', options);
+
         $("#id_cpf").mask("000.000.000-00");
         $("#id_tel").mask("00000000000");
         $("#id_nickname").mask("AAAAAAAAAAAAAAAAAAAA");
+
+        $("label").css("margin-top", "12px");
         $("#id_tel").prop("placeholder", "exemplo 43999999999");
         document.getElementById("hint_id_username").textContent = "Informe o CPF";
         document.getElementById("hint_id_is_active").textContent = "Campo 'ATIVO' indica se o usuário esta ou não ativo.";

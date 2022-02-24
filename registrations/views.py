@@ -309,7 +309,7 @@ class AppointmentCreate(LoginRequiredMixin, CreateView):
             newclient.save()
             form.instance.client = newclient
         form.instance.date = Time().convertdateBRtoUS(self.request.POST.get('appdate'))
-        form.instance.procedure.total = form.instance.procedure.price
+        form.instance.total = form.instance.procedure.price
         form.instance.created_by = self.request.user
         form.instance.master = self.request.user.master
         url = super().form_valid(form)
@@ -485,7 +485,7 @@ class ClientUpdate(LoginRequiredMixin, UpdateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['appointments'] = Appointment.objects.filter(client__id = self.kwargs['pk'])
+        context['appointments'] = Appointment.objects.filter(client__id = self.kwargs['pk']).filter(is_active = True).order_by('-date','-id')
         return context
 
 
@@ -627,7 +627,7 @@ class AppointmentList(LoginRequiredMixin, ListView):
     template_name = 'registrations/lists/appointment.html'
 
     def get_queryset(self):
-        self.object_list = Appointment.objects.filter(master= self.request.user.master, is_active = 1)
+        self.object_list = Appointment.objects.filter(master= self.request.user.master, is_active = 1).order_by('-id')
         return self.object_list
 
 
