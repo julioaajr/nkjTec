@@ -24,7 +24,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 DEBUG = config('DEBUG', cast=bool, default=False)
 SECRET_KEY = config('SECRET_KEY')
 
-ALLOWED_HOSTS = ['https://nkjtec.herokuapp.com/','localhost','nkjtec.com.br']
+ALLOWED_HOSTS = ['nkjtec.herokuapp.com','localhost','nkjtec.com.br']
 
 
 # Application definition
