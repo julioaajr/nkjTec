@@ -8,7 +8,7 @@
 <div class="row ml-auto">
     <div class="col-10">
         <form method="get" class="form-inline my-2 my-lg-0 mt-2" action="">
-            <select class="form-control mr-3" name="id_professional" id="id_professional">
+            <select class="form-control mr-3" name="id_professional" id="id_professional" onchange="this.form.submit()">
                 {% for prof in professionals%}
                     {%if prof.id == professionaldefault.id%}
                         <option value={{prof.id}} selected>{{prof.first_name}}</option>

@@ -62,7 +62,7 @@ class Appointment(models.Model):
     payed = models.CharField(max_length=1, choices=PAYED,default='N', verbose_name="Pago")
     appdate = models.CharField(max_length=10, verbose_name="Data")#format dd/mm/yyyy
     apphour = models.CharField(max_length=5, verbose_name="Horário")#format hh:mm
-    total = models.DecimalField(decimal_places=2,max_digits=4, blank = True, null = True, verbose_name="Total")
+    total = models.FloatField(blank=True, null=True, verbose_name="Total")
     is_active = models.BooleanField(default=True, verbose_name="Ativo")
     created_at = models.DateTimeField(auto_now=True, verbose_name="Criado em")
     master = models.ForeignKey(User, models.DO_NOTHING, blank = True, null = True, related_name="masterappointment", verbose_name="Master")
