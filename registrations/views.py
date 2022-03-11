@@ -95,8 +95,8 @@ def AllSchedules( request):
     if(request.GET.get('idappointment') and request.GET.get('newstatus')):
         appointment = Appointment.objects.get(pk = request.GET.get('idappointment'))
         appointment.status = request.GET.get('newstatus')
-        if(request.GET.get('newstatus') == '4'):
-            appointment.payed = 'S'
+        if(request.GET.get('newstatus') == '4' and request.GET.get('payedstatus') ):
+            appointment.payed = request.GET.get('payedstatus')
         #valida se o usuario que esta pedindo é da mesma empresa que o agendamento
         if (request.user.master == appointment.master):
             appointment.save()
@@ -152,8 +152,8 @@ def MySchedule(request): #VIEW ONDE BUSCA OS HORÁRIOS DO PROFISSIONAL LOGADO.
     if(request.GET.get('idappointment') and request.GET.get('newstatus')):
         appointment = Appointment.objects.get(pk = request.GET.get('idappointment'))
         appointment.status = request.GET.get('newstatus')
-        if(request.GET.get('newstatus') == '4'):
-            appointment.payed = 'S'
+        if(request.GET.get('newstatus') == '4' and request.GET.get('payedstatus') ):
+            appointment.payed = request.GET.get('payedstatus')
         #valida se o usuario que esta pedindo é da mesma empresa que o agendamento
         if (request.user.master == appointment.master):
             appointment.save()

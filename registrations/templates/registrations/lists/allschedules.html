@@ -90,7 +90,8 @@
 
                 {%endif%}
                 {% if obj.status == '3'%}
-                <a href="{% url 'allschedules' %}?idappointment={{obj.pk}}&newstatus=4&date={{date}}" class="btn btn-info btn-sm">Atendido e Pago</a>
+                <a href="{% url 'allschedules' %}?idappointment={{obj.pk}}&newstatus=4&date={{date}}&payedstatus=S" class="btn btn-info btn-sm">Atendido e Pago</a>
+                <a href="{% url 'allschedules' %}?idappointment={{obj.pk}}&newstatus=4&date={{date}}&payedstatus=N" class="btn btn-info btn-sm">Atendido</a>
                 {%endif%}
 
 
