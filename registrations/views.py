@@ -380,7 +380,7 @@ class DayOffCreate(LoginRequiredMixin, CreateView):
 class UserCreate(LoginRequiredMixin, CreateView):
     login_url = reverse_lazy('login')
     model = User
-    fields = ['first_name','nickname','username','email','tel','professional']
+    fields = ['first_name','nickname','username','password','email','tel','professional']
     template_name = 'registrations/forms.html'
     success_url = reverse_lazy('list-user')
 
@@ -392,7 +392,7 @@ class UserCreate(LoginRequiredMixin, CreateView):
     def form_valid(self, form):
         form.instance.created_by = self.request.user
         form.instance.master = self.request.user.master
-        form.instance.professional = True
+        form.instance.set_password(self.request.POST.get('password'))
         url = super().form_valid(form)
         return url
 
