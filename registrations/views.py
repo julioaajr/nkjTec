@@ -19,7 +19,7 @@ WEEKDAY = ['Segunda-feira','Terça-feira','Quarta-feira','Quinta-feira','Sexta-f
 
 
 def AllSchedulesMaster(request, nickmaster):
-    print(nickmaster)
+    #print(nickmaster)
     data = {
         'professionals':{},
         'feriados':{},
@@ -30,6 +30,8 @@ def AllSchedulesMaster(request, nickmaster):
     #date formato dd/mm/aaaa
     if (request.GET.get('date')):
         data['date'] = request.GET.get('date')
+        if(datetime.strptime(data['date'],'%Y-%m-%d').date() < datetime.today().date()):
+            data['date'] = datetime.today().strftime('%Y-%m-%d')
         date = Time().convertdate(request.GET.get('date'))
     else:
         data['date'] = datetime.today().strftime('%Y-%m-%d')
