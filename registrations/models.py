@@ -68,6 +68,8 @@ class Appointment(models.Model):
     master = models.ForeignKey(User, models.DO_NOTHING, blank = True, null = True, related_name="masterappointment", verbose_name="Master")
     created_by = models.ForeignKey(User, models.DO_NOTHING, blank = True, null = True, related_name="createdbyappointmen", verbose_name="Criado por")
     date = models.DateField(null=True,blank=True)
+    appbegin = models.TimeField(null=True,blank=True,verbose_name="Inicio Atendimento")
+    append = models.TimeField(null=True,blank=True, verbose_name="Final Atendimento")
     def __str__(self):
         return (f"Nome: {self.client} | Data: {self.appdate} | Horário: {self.apphour} | Date: {self.date}")
 

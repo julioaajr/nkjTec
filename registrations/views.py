@@ -311,6 +311,8 @@ class AppointmentCreate(LoginRequiredMixin, CreateView):
             newclient.save()
             form.instance.client = newclient
         form.instance.date = Time().convertdateBRtoUS(self.request.POST.get('appdate'))
+        form.instance.appbegin = self.request.POST.get('apphour')
+        form.instance.appbegin = self.request.POST.get('apphour') + timedelta(minutes=form.instance.procedure.time)
         form.instance.total = form.instance.procedure.price
         form.instance.created_by = self.request.user
         form.instance.master = self.request.user.master
@@ -429,9 +431,16 @@ class ProcedureUpdate(LoginRequiredMixin, UpdateView):
 class AppointmentUpdate(LoginRequiredMixin, UpdateView):
     login_url = reverse_lazy('login')
     model = Appointment
-    fields =  ['client','appdate','apphour','professional','status','procedure','total','payed']
+    fields =  ['client','appdate','apphour','professional','status','procedure','total','payed','appbegin','append']
     template_name = 'registrations/update_appointment.html'
     success_url = reverse_lazy('myschedule')
+
+    def form_valid(self, form):
+        splitbegin = form.instance.appbegin.strftime('%H:%M:%S')
+        splitbegin = splitbegin.split(":")
+        form.instance.append = str(timedelta(hours=int(splitbegin[0]), minutes=int(splitbegin[1])) + timedelta(minutes=int(form.instance.procedure.time)))
+        url = super().form_valid(form)
+        return url
 
     def get_object(self, queryset= None):
         self.object = get_object_or_404(Appointment, pk=self.kwargs['pk'], master = self.request.user.master)
