@@ -179,15 +179,11 @@ def MySchedule(request): #VIEW ONDE BUSCA OS HORÁRIOS DO PROFISSIONAL LOGADO.
         busy = Appointment.objects.filter(professional=request.user.id).filter(appdate = date).filter(is_active = True)
         today = datetime.today()
         tomorrow =  today + timedelta(minutes = 500)
-        print(f' asqui {tomorrow}')
         testapp = Appointment.objects.filter(professional = request.user).filter(date__isnull =  True).count()
-        print(testapp)
     except:
         pass
 
-    """    if len(data['feriados']) >= 1 and request.user.is_staff==False:
-            return render(request, 'registrations/lists/myschedule.html',data)"""
-            
+
     busy = list(busy)
     busyclient = []
     for i in schedule:
@@ -312,10 +308,12 @@ class AppointmentCreate(LoginRequiredMixin, CreateView):
             form.instance.client = newclient
         form.instance.date = Time().convertdateBRtoUS(self.request.POST.get('appdate'))
         form.instance.appbegin = self.request.POST.get('apphour')
-        form.instance.appbegin = self.request.POST.get('apphour') + timedelta(minutes=form.instance.procedure.time)
         form.instance.total = form.instance.procedure.price
         form.instance.created_by = self.request.user
-        form.instance.master = self.request.user.master
+        form.instance.master = self.request.user.master       
+        splitbegin = form.instance.appbegin.split(":")
+        form.instance.append = str(timedelta(hours=int(splitbegin[0]), minutes=int(splitbegin[1])) + timedelta(minutes=int(form.instance.procedure.time)))
+
         url = super().form_valid(form)
         return url
 

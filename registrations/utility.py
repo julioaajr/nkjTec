@@ -41,7 +41,16 @@ class Time:
                     aux = "0"+aux
                 free.append(aux)
             begin+=interval
+        for app in busy:
+            beginTD = timedelta(hours= app.appbegin.hour,minutes= app.appbegin.minute)
+            endTD = timedelta(hours= app.append.hour,minutes= app.append.minute)
+            for horarios in free:
+                freeTD = timedelta(hours= int(horarios.split(':')[0]), minutes= int(horarios.split(':')[1]))
+                if(freeTD > beginTD and freeTD < endTD):
+                    free.remove(horarios)
         return (free)
+
+
 
 class Emails:
     #3 strings email assunto e conteudo

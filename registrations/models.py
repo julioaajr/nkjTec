@@ -19,8 +19,7 @@ class Procedure(models.Model):
         return f"{self.name} | R$ {self.price}"
 
 
-class Client (models.Model):
-    
+class Client (models.Model):   
     name = models.CharField(max_length=255, verbose_name="Nome")
     tel = models.CharField(max_length=11, verbose_name="Telefone")
     cpf = models.CharField(null= True, blank=True,max_length=14, verbose_name="CPF")
