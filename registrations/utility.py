@@ -46,9 +46,7 @@ class Time:
             endTD = timedelta(hours= app.append.hour,minutes= app.append.minute)
             for horarios in free[:]:
                 freeTD = timedelta(hours= int(horarios.split(':')[0]), minutes= int(horarios.split(':')[1]))
-                print(f'free TD --------- {freeTD}  begin:{beginTD} end:{endTD}')
                 if(freeTD > beginTD and freeTD < endTD):
-                    print("deletou")
                     free.remove(horarios)
         return (free)
 

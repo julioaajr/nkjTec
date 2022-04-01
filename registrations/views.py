@@ -293,7 +293,7 @@ class AppointmentCreate(LoginRequiredMixin, CreateView):
     def get_form(self, *args, **kwargs):
         form = super(AppointmentCreate, self).get_form(*args, **kwargs)
         form.fields['professional'].queryset = User.objects.filter(master = self.request.user.master, professional = True, is_active = 1)
-        form.fields['client'].queryset = Client.objects.filter(master = self.request.user.master, is_active = 1)
+        form.fields['client'].queryset = Client.objects.filter(master = self.request.user.master, is_active = 1) | Client.objects.filter(id = 1)
         form.fields['procedure'].queryset = Procedure.objects.filter(master = self.request.user.master, is_active = 1)
         return form
 
