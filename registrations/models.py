@@ -70,7 +70,7 @@ class Appointment(models.Model):
     appbegin = models.TimeField(null=True,blank=True,verbose_name="Inicio Atendimento")
     append = models.TimeField(null=True,blank=True, verbose_name="Final Atendimento")
     def __str__(self):
-        return (f"Nome: {self.client} | Data: {self.appdate} | Horário: {self.apphour} | Date: {self.date}")
+        return (f"Master: {self.master.first_name} | Nome: {self.client} | Data: {self.appdate} | Horário: {self.apphour} | Date: {self.date}")
 
 
     def get_apphour(self):

@@ -29,6 +29,7 @@
 <script src="{% static 'js/jquery.mask.min.js' %}"></script>
 
 <script>
+
     $(document).ready(function () {
         $("#id_created_at").prop("disabled", true);
         $("#id_created_by").prop("disabled", true);
@@ -44,13 +45,20 @@
         $("#id_tel").mask("00000000000");
         $("#id_nickname").mask("AAAAAAAAAAAAAAAAAAAA");
 
-        $("label").css("margin-top", "15px");
+        $("label").css("margin-top", "13px");
+        $("label").css("margin-bottom", "0px");
         $("#id_username").prop("placeholder", "000.000.000-00");
         $("#id_begin").prop("placeholder", "exemplo 08:00");
         $("#id_end").prop("placeholder", "exemplo 18:00");
         $("#id_tel").prop("placeholder", "exemplo 43999999999");
         $("#id_interval").prop("placeholder", "exemplo 30");
         $("#id_price").prop("placeholder", "exemplo 30,50 ou 30");
+        document.getElementById("btn_submit").onclick = function () {
+            //disable
+            this.form.submit();
+            this.disabled = true;
+        }
+
         document.getElementById("hint_id_username").textContent = "Informe o CPF";
 
     });

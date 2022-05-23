@@ -110,7 +110,8 @@ def AllSchedules( request):
     weekday = Time().convertweekday(date)
     data['weekday'] = WEEKDAY[weekday]
     try:
-        data['professionals'] = User.objects.filter(master = request.user.master)
+        data['professionals'] = User.objects.filter(master = request.user.master).filter(is_active = 1)
+        print(data['professionals'])
         data['professionaldefault'] = data['professionals'][0]
         
         if(request.GET.get('id_professional')):
@@ -317,28 +318,6 @@ class AppointmentCreate(LoginRequiredMixin, CreateView):
         url = super().form_valid(form)
         return url
 
-    ''' TENTATIVA DE SOBRESCREEVER O POST
-    def post(self, request, *args, **kwargs):
-        if(self.request.POST.get('my_checkbox') == 'on'):
-            
-            print('testeposstttt')
-            newclient = Client()
-            newclient.name = self.request.POST.get('id_newclient')
-            newclient.tel = self.request.POST.get('id_tel')
-            newclient.master = self.request.user.master
-            newclient.created_by = self.request.user
-            newclient.save()
-            form.instance.client = newclient
-        form = self.get_form()
-        print(form.instance)
-        if form.is_valid():
-            return self.form_valid(form)
-        else:
-            return self.form_invalid(form)
-    '''
-
-
-
 
 class ScheduleCreate(LoginRequiredMixin, CreateView):
     login_url = reverse_lazy('login')
@@ -375,7 +354,9 @@ class DayOffCreate(LoginRequiredMixin, CreateView):
     def form_valid(self, form):
         form.instance.created_by = self.request.user
         form.instance.master = self.request.user.master
+        #antes de salvar
         url = super().form_valid(form)
+        #depois de salvar
         return url
 
 
@@ -472,7 +453,7 @@ class DayOffUpdate(LoginRequiredMixin, UpdateView):
 class UserUpdate(LoginRequiredMixin, UpdateView):
     login_url = reverse_lazy('login')
     model = User
-    fields = ['first_name','username','email','tel','nickname','is_active']
+    fields = ['first_name','username','email','tel','nickname','professional','is_active']
     template_name = 'registrations/userupdate.html'
     success_url = reverse_lazy('list-user')
 
@@ -511,8 +492,7 @@ class ProcedureDelete(LoginRequiredMixin, DeleteView):
         self.object = get_object_or_404(Procedure, pk=self.kwargs['pk'], master = self.request.user.master)
         return self.object
 
-    def delete(self, request, *args, **kwargs):
-        self.object = self.get_object()
+    def form_valid(self, form):
         success_url = self.get_success_url()
         self.object.is_active = False
         self.object.save()
@@ -530,8 +510,7 @@ class AppointmentDelete(LoginRequiredMixin, DeleteView):
         self.object = get_object_or_404(Appointment, pk=self.kwargs['pk'], master = self.request.user.master)
         return self.object
 
-    def delete(self, request, *args, **kwargs):
-        self.object = self.get_object()
+    def form_valid(self, form):
         success_url = self.get_success_url()
         self.object.is_active = False
         self.object.save()
@@ -549,8 +528,7 @@ class ScheduleDelete(LoginRequiredMixin, DeleteView):
         self.object = get_object_or_404(Schedule, pk=self.kwargs['pk'], master = self.request.user.master)
         return self.object
 
-    def delete(self, request, *args, **kwargs):
-        self.object = self.get_object()
+    def form_valid(self, form):
         success_url = self.get_success_url()
         self.object.is_active = False
         self.object.save()
@@ -568,8 +546,7 @@ class DayOffDelete(LoginRequiredMixin, DeleteView):
         self.object = get_object_or_404(DayOff, pk=self.kwargs['pk'], master = self.request.user.master)
         return self.object
 
-    def delete(self, request, *args, **kwargs):
-        self.object = self.get_object()
+    def form_valid(self, form):
         success_url = self.get_success_url()
         self.object.is_active = False
         self.object.save()
@@ -587,12 +564,12 @@ class UserDelete(LoginRequiredMixin, DeleteView):
         self.object = get_object_or_404(User, pk=self.kwargs['pk'], master = self.request.user.master)
         return self.object
     
-    def delete(self, request, *args, **kwargs):
-        self.object = self.get_object()
+    def form_valid(self, form):
         success_url = self.get_success_url()
         self.object.is_active = False
         self.object.save()
         return HttpResponseRedirect(success_url)
+
 
 
 class ClientDelete(LoginRequiredMixin, DeleteView):
@@ -602,16 +579,15 @@ class ClientDelete(LoginRequiredMixin, DeleteView):
     template_name = 'registrations/delete-forms.html'
     success_url = reverse_lazy('list-client')
 
-    def get_object(self, queryset= None):
-        self.object = get_object_or_404(Client, pk=self.kwargs['pk'], master = self.request.user.master)
-        return self.object
-
-    def delete(self, request, *args, **kwargs):
-        self.object = self.get_object()
+    def form_valid(self, form):
         success_url = self.get_success_url()
         self.object.is_active = False
         self.object.save()
         return HttpResponseRedirect(success_url)
+
+    def get_object(self, queryset= None):
+        self.object = get_object_or_404(Client, pk=self.kwargs['pk'], master = self.request.user.master)
+        return self.object
 
 
 
