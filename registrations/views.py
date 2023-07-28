@@ -50,7 +50,7 @@ def AllSchedulesMaster(request, nickmaster):
         data['master'] = User.objects.get(nickname = nickmaster)
         data['master'].access_schedules +=1
         data['master'].save()
-        if ( data['master'].is_master == True):
+        if ( data['master'].is_master == True and request.GET.get('solo') != 'sim'):
             data['professionals'] = User.objects.filter(master = data['master'])
         else:
             data['professionals'] = User.objects.filter(nickname = nickmaster)
@@ -231,22 +231,24 @@ def PassChange(request):
     data={}
     if request.method == 'GET':
         data['target'] = request.GET.get('target')
+        target = get_object_or_404(User, pk=request.GET.get('target'), master = request.user.master)
+        print(target)
         return render(request, 'registrations/passchange.html',data)
 
     if request.method == 'POST':
         try:
-            user = User.objects.get(id = request.user.id)
-            target = User.objects.get(id = request.POST.get('target'))
+            target = get_object_or_404(User, pk=request.POST.get('target'), master = request.user.master)
+            print(target)
         except:
             pass
-        if(user.master == target.master):
+        if(target):
             target.set_password(request.POST.get('password'))
             subject = "NkjTec Sistemas | Alteracao de senha"
             content = "Sua Senha foi alterada, senão foi você sugerimos que recupere sua senha o quanto antes!"
             u = Emails()
-            print(u.sendmails(user.email,subject,content))
+            print(u.sendmails(target.email,subject,content))
             target.save()
-            if(user != target):
+        else:
                 return redirect('myschedule')            
         return redirect('login')
 
@@ -627,7 +629,8 @@ class ScheduleList(LoginRequiredMixin, ListView):
         if (self.request.GET.get('search')):
             self.object_list = Schedule.objects.filter(master= self.request.user.master, professional__first_name__icontains = self.request.GET.get('search'), is_active = 1).order_by('professional__first_name')
         else:
-            self.object_list = Schedule.objects.filter(master= self.request.user.master, is_active = 1).order_by('professional__first_name')
+            self.object_list = Schedule.objects.filter(master= self.request.user.master, is_active = 1,professional__master = self.request.user.master).order_by('professional__first_name')
+            #self.object_list = Schedule.objects.filter(master= self.request.user.master, is_active = 1).order_by('professional__first_name')
         return self.object_list
 
 class DayOffList(LoginRequiredMixin, ListView):
