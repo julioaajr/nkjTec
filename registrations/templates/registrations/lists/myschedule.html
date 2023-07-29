@@ -3,7 +3,7 @@
 
 {% block content %}
 <div class="container-fluid">
-    <h4>Agendamentos {{datec}} {{weekday}} | Para {{request.user.first_name}}</h4>
+    <h4>Agendamentos {{datec}} {{weekday}} | Para: {{request.user.first_name}}</h4>
     <hr>
     <div class="row ml-auto">
         <div class="col-10">
@@ -60,8 +60,18 @@
                 </td>
                 <td>{{obj.get_status_display}}</td>
                 <td>{{obj.procedure.name}}</td>
-                <td>{{obj.total}}</td>
-                <td>{{obj.get_payed_display}}</td>
+                <td>{% if obj.total %} 
+                    {{obj.total}} 
+                    {%else%} 
+                    {%endif%}
+                </td>
+                <td>
+                    {% if obj.pk %}
+                    {{obj.get_payed_display}}
+                    {%else%}
+                    {%endif%}
+
+                </td>
 
                 <td>
 
