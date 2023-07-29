@@ -312,6 +312,7 @@ class AppointmentCreate(LoginRequiredMixin, CreateView):
         form.instance.date = Time().convertdateBRtoUS(self.request.POST.get('appdate'))
         form.instance.appbegin = self.request.POST.get('apphour')
         form.instance.total = form.instance.procedure.price
+
         form.instance.created_by = self.request.user
         form.instance.master = self.request.user.master       
         splitbegin = form.instance.appbegin.split(":")
