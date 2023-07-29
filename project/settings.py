@@ -23,7 +23,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 DEBUG = config('DEBUG', cast=bool, default=False)
 SECRET_KEY = config('SECRET_KEY')
 
-ALLOWED_HOSTS = ['nkjtec.pythonanywhere.com/','127.0.0.1']
+ALLOWED_HOSTS = ['nkjtec.pythonanywhere.com/','127.0.0.1','nkjtec.pythonanywhere.com',]
 
 
 
