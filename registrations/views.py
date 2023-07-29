@@ -51,7 +51,8 @@ def AllSchedulesMaster(request, nickmaster):
         data['master'].access_schedules +=1
         data['master'].save()
         if ( data['master'].is_master == True and request.GET.get('solo') != 'sim'):
-            data['professionals'] = User.objects.filter(master = data['master'])
+            data['professionals'] = User.objects.filter(master = data['master']).filter(professional = True)
+            print('oi')
         else:
             data['professionals'] = User.objects.filter(nickname = nickmaster)
     except:
@@ -110,7 +111,7 @@ def AllSchedules( request):
     weekday = Time().convertweekday(date)
     data['weekday'] = WEEKDAY[weekday]
     try:
-        data['professionals'] = User.objects.filter(master = request.user.master).filter(is_active = 1)
+        data['professionals'] = User.objects.filter(master = request.user.master).filter(is_active = 1).filter(professional = True)
         print(data['professionals'])
         data['professionaldefault'] = data['professionals'][0]
         
