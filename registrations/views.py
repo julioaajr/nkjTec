@@ -51,7 +51,6 @@ def AllSchedulesMaster(request, nickmaster): #VIEW DA AGENDA ONLINE
         data['master'].save()
         if ( data['master'].is_master == True and request.GET.get('solo') != 'sim'):
             data['professionals'] = User.objects.filter(master = data['master']).filter(professional = True).filter(is_active = True)
-            print('oi')
         else:
             data['professionals'] = User.objects.filter(nickname = nickmaster).filter(is_active = True)
     except:
@@ -111,7 +110,6 @@ def AllSchedules( request):
     data['weekday'] = WEEKDAY[weekday]
     try:
         data['professionals'] = User.objects.filter(master = request.user.master).filter(is_active = 1).filter(professional = True)
-        print(data['professionals'])
         data['professionaldefault'] = data['professionals'][0]
         
         if(request.GET.get('id_professional')):
@@ -209,8 +207,6 @@ def PassRecovery(request):
         return render(request, 'registrations/passrecovery.html')
 
     if request.method == 'POST':
-        print(request.POST.get('username'))
-        
         try:
             user = User.objects.get(username = request.POST.get('username'),email = request.POST.get('email'))
         except:
@@ -232,13 +228,11 @@ def PassChange(request):
     if request.method == 'GET':
         data['target'] = request.GET.get('target')
         target = get_object_or_404(User, pk=request.GET.get('target'), master = request.user.master)
-        print(target)
         return render(request, 'registrations/passchange.html',data)
 
     if request.method == 'POST':
         try:
             target = get_object_or_404(User, pk=request.POST.get('target'), master = request.user.master)
-            print(target)
         except:
             pass
         if(target):
