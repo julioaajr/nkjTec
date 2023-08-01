@@ -30,9 +30,11 @@
             <div class="collapse navbar-collapse" id="navbarSupportedContent">
                 <ul class="navbar-nav">
                 {% if request.user.is_authenticated %}
+                    {% if request.user.professional%}
                     <li class="nav-item">
                         <a class="nav-link" href="{% url 'myschedule' %}">Minha Agenda</a>
                     </li>
+                    {% endif %}
                     <li class="nav-item">
                         <a class="nav-link" href="{% url 'allschedules' %}">Todas as Agendas</a>
                     </li>

@@ -17,7 +17,7 @@ WEEKDAY = ['Segunda-feira','Terça-feira','Quarta-feira','Quinta-feira','Sexta-f
 ############################## VIEWS GERAIS ##############################
 
 
-def AllSchedulesMaster(request, nickmaster):
+def AllSchedulesMaster(request, nickmaster): #VIEW DA AGENDA ONLINE
     #print(nickmaster)
     data = {
         'professionals':{},
@@ -50,10 +50,10 @@ def AllSchedulesMaster(request, nickmaster):
         data['master'].access_schedules +=1
         data['master'].save()
         if ( data['master'].is_master == True and request.GET.get('solo') != 'sim'):
-            data['professionals'] = User.objects.filter(master = data['master']).filter(professional = True)
+            data['professionals'] = User.objects.filter(master = data['master']).filter(professional = True).filter(is_active = True)
             print('oi')
         else:
-            data['professionals'] = User.objects.filter(nickname = nickmaster)
+            data['professionals'] = User.objects.filter(nickname = nickmaster).filter(is_active = True)
     except:
         pass
     for i in data['professionals']:
