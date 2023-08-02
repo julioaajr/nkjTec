@@ -9,16 +9,10 @@
 <div class="row">
     <div class="col-sm col-6">
         <form method="get" class="form-inline my-2 my-lg-0 mt-2" action="">
-            <input class="form-control mr-sm-2" type="date" aria-label="date" name="date" id=date value={{date}}
+            <input class="form-control mr-sm-2" type="date" aria-label="date" name="date" id="date" value={{date}}
                 autofocus>
         </form>
     </div>
-    <!-- <div class="col-sm">
-        <form method="get" class="form-inline my-2 my-lg-0 mt-2" action="">
-            <button class="btn btn-outline-success my-2 my-sm-0 btn-sm" value="2022-01-01" name="date" type="submit">Procurar </button>
-        </form>
-    </div> -->
-
 </div>
 <div class="row pt-2 pb-auto">
     {% for item in feriados%}
@@ -32,50 +26,44 @@
 
 
 {% for prof in professionals %}
-<hr>
-<div class="container-fluid">
-    <div class="row">
-        <div class="col">
-            <h5>{{prof}}</h5>
-
+    <hr>
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col">
+                <h5>{{prof}}</h5>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col">
+                {% for app in free %}
+                {% if app.professional.id == prof.id%}
+                <a class="btn btn-success mt-1" href="https://api.whatsapp.com/send?phone=55{{prof.master.tel}}&text=Olá Gostaria deste horario!! %0A DIA: {{datec}} %0A HORA: {{app.apphour}} %0A PROFISSIONAL: {{prof.first_name.split.0}} | {{prof.nickname}}">{{app.apphour}}</a>
+                {% endif%}
+                {% endfor %}
+            </div>
         </div>
     </div>
-    <div class="row">
-        <div class="col">
-
-            {% for app in free %}
-            {% if app.professional.id == prof.id%}
-            <a class="btn btn-success mt-1" href="https://api.whatsapp.com/send?phone=55{{prof.master.tel}}&text=Olá Gostaria deste horario!! %0A DIA: {{datec}} %0A HORA: {{app.apphour}} %0A PROFISSIONAL: {{prof.first_name.split.0}} | {{prof.nickname}}">{{app.apphour}}</a>
-            {% endif%}
-            {% endfor %}
-        </div>
-    </div>
-</div>
-<hr>
+    <hr>
 {% endfor %}
 
 {% endblock %}
 
 {% block scripts %}
-
-<script>
-    $('input[type=date]').change(function () {
-        this.form.submit();
-    });
-
-    $('input[type=date]').keypress(function (e) {
-        $(this).off('change blur');
-
-        $(this).blur(function () {
+    <script>
+        $('input[type=date]').change(function () {
             this.form.submit();
         });
 
-        if (e.keyCode === 13) {
-            this.form.submit();
-        }
-    });
+        $('input[type=date]').keypress(function (e) {
+            $(this).off('change blur');
 
-</script>
+            $(this).blur(function () {
+                this.form.submit();
+            });
 
-
+            if (e.keyCode === 13) {
+                this.form.submit();
+            }
+        });
+    </script>
 {% endblock %}

@@ -28,10 +28,11 @@ def AllSchedulesMaster(request, nickmaster): #VIEW DA AGENDA ONLINE
     #data['date'] formato yyyy-mm-dddd
     #date formato dd/mm/aaaa
     if (request.GET.get('date')):
+        date = Time().convertdate(request.GET.get('date'))
         data['date'] = request.GET.get('date')
         if(datetime.strptime(data['date'],'%Y-%m-%d').date() < datetime.today().date()):
             data['date'] = datetime.today().strftime('%Y-%m-%d')
-        date = Time().convertdate(request.GET.get('date'))
+            date = Time().convertdate(data['date'])
     else:
         data['date'] = datetime.today().strftime('%Y-%m-%d')
         date = datetime.today().strftime('%d/%m/%Y')
@@ -55,6 +56,7 @@ def AllSchedulesMaster(request, nickmaster): #VIEW DA AGENDA ONLINE
             data['professionals'] = User.objects.filter(nickname = nickmaster).filter(is_active = True)
     except:
         pass
+    
     for i in data['professionals']:
         try:
             data['feriados'] = DayOff.objects.filter(daydate = date).filter(professional=i).filter(is_active = True)
@@ -72,6 +74,7 @@ def AllSchedulesMaster(request, nickmaster): #VIEW DA AGENDA ONLINE
                 app.professional = i
                 app.status = ""
                 busyclient.append(app)
+            free = []
     busyclient = sorted(busyclient,key = lambda x: x.apphour)
     data['free']=busyclient
     return render(request, 'registrations/lists/allschedulesmaster.html',data)
@@ -120,6 +123,7 @@ def AllSchedules( request):
 
         data['feriados'] = DayOff.objects.filter(daydate = date).filter(professional=request.user.id).filter(is_active = True)
         schedule = Schedule.objects.filter(master = request.user.master, professional = professional).filter(weekday=weekday).filter(is_active = True)
+        print(schedule)
         busy = Appointment.objects.filter(master = request.user.master, professional = professional, appdate = date).filter(is_active = True)
         
     except:
@@ -624,7 +628,7 @@ class ScheduleList(LoginRequiredMixin, ListView):
         if (self.request.GET.get('search')):
             self.object_list = Schedule.objects.filter(master= self.request.user.master, professional__first_name__icontains = self.request.GET.get('search'), is_active = 1).order_by('professional__first_name')
         else:
-            self.object_list = Schedule.objects.filter(master= self.request.user.master, is_active = 1,professional__master = self.request.user.master).order_by('professional__first_name')
+            self.object_list = Schedule.objects.filter(master= self.request.user.master, is_active = 1,professional__master = self.request.user.master).order_by('professional__first_name','weekday')
             #self.object_list = Schedule.objects.filter(master= self.request.user.master, is_active = 1).order_by('professional__first_name')
         return self.object_list
 

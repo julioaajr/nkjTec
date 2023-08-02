@@ -103,7 +103,7 @@ class Schedule(models.Model):
     is_shared = models.CharField(max_length=1, choices=SHARED,default='S', verbose_name="Compartilhar na Agenda Online")
 
     def __str__(self):
-        return f"Profissional: {self.professional.first_name} Begin: {self.begin} \nEnd: {self.end} \nInterval: " + str(self.interval)
+        return f"\nProfissional: {self.professional.first_name} Begin: {self.begin} \nEnd: {self.end} \nInterval: " + str(self.interval)
 
 
 class DayOff (models.Model):
