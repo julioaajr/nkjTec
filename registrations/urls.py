@@ -10,6 +10,8 @@ urlpatterns =[
     path('allschedules/<str:nickmaster>/', AllSchedulesMaster, name ='allschedules-master'),
     path('passrecovery/', PassRecovery, name ='passrecovery'),
     path('passchange/', PassChange, name ='passchange'),
+    path('clientunion/', ClientUnion, name = 'client-union'),
+    
     #cadastrar
     path('reg/procedure/', ProcedureCreate.as_view(), name ='create-procedure'),
     path('reg/appointment/', AppointmentCreate.as_view(), name ='create-appointment'),

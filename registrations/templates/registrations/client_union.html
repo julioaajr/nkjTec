@@ -1,0 +1,71 @@
+{% extends 'pages/template.html' %}
+{% load static %}
+{% load crispy_forms_tags %}
+
+
+{% block title %}
+<title>União de clientes</title>
+{% endblock %}
+
+{% block content %}
+
+<div class="container">
+
+    <h3>União de clientes</h3>
+    <p class="lead"> Preencha todos os campos {{request.get.get.id_appdate}}</p>
+    <hr>
+    <form action="" method="post">{% csrf_token %}
+        <select class="form-control mr-3" name="id_client1" id="id_client1" onchange="" required>
+                    <option selected></option>
+            {% for cli in client%}
+                    <option value={{cli.id}}>ID: {{cli.id}} | {{cli.name}}</option>
+            {% endfor %}
+        </select>
+        <hr>
+        <select class="form-control mr-3" name="id_client2" id="id_client2" onchange="" required>
+            <option selected></option>
+            {% for cli in client%}
+                    <option value={{cli.id}}>ID: {{cli.id}} | {{cli.name}}</option>
+            {% endfor %}
+        </select>
+
+        {{ form|crispy }}
+        <hr>
+        <button type="submit" id="btn_submit" class="btn btn-primary">SALVAR</button>
+
+    </form>
+</div>
+
+{% endblock %}
+
+
+{% block scripts %}
+<script src="{% static 'js/jquery.mask.min.js' %}"></script>
+
+<script>
+
+
+
+    $(document).ready(function () {
+
+
+        $('#id_client1').select2({
+            placeholder: "Escolha o cliente PRINCIPAL"
+        });
+
+        $('#id_client2').select2({
+            placeholder: "Escolha o cliente que será EXCLUIDO"
+        });
+        
+        document.getElementById("btn_submit").onclick = function () {
+            //disable
+            this.form.submit();
+            this.disabled = true;
+        }
+
+
+    });
+</script>
+
+
+{% endblock %}

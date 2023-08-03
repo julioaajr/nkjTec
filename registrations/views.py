@@ -1,7 +1,7 @@
 from cgi import print_directory
 from django.contrib.auth.decorators import login_required
 from django.http import request
-from django.http.response import HttpResponseRedirect
+from django.http.response import HttpResponseRedirect, HttpResponse
 from django.shortcuts import render, get_object_or_404, redirect
 from django.views.generic import CreateView
 from django.views.generic.edit import UpdateView, UpdateView, DeleteView
@@ -247,7 +247,30 @@ def PassChange(request):
         else:
                 return redirect('myschedule')            
         return redirect('login')
+    
 
+@login_required
+def ClientUnion(request):
+    template_name = 'registrations/client_union.html'
+    data = {}
+    if request.method == 'GET':
+        data['client'] = Client.objects.filter(master= request.user.master, is_active = 1).order_by('name')
+        return render(request,template_name,data)
+        
+    if request.method == 'POST': 
+        try:
+            cli_principal = get_object_or_404(Client, pk=request.POST.get('id_client1'), master = request.user.master)
+            cli_secundario = get_object_or_404(Client, pk=request.POST.get('id_client2'), master = request.user.master)
+            if cli_principal != cli_secundario:
+                appointment = Appointment.objects.filter(client = cli_secundario)
+                for app in appointment:
+                    app.client = cli_principal
+                    app.save()
+                cli_secundario.is_active = False
+                cli_secundario.save()
+        except:
+            pass
+        return redirect('client-union')
 
 
 #############################  CREATE  #############################
