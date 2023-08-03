@@ -18,7 +18,6 @@ WEEKDAY = ['Segunda-feira','Terça-feira','Quarta-feira','Quinta-feira','Sexta-f
 
 
 def AllSchedulesMaster(request, nickmaster): #VIEW DA AGENDA ONLINE
-    #print(nickmaster)
     data = {
         'professionals':{},
         'feriados':{},
@@ -123,7 +122,6 @@ def AllSchedules( request):
 
         data['feriados'] = DayOff.objects.filter(daydate = date).filter(professional=request.user.id).filter(is_active = True)
         schedule = Schedule.objects.filter(master = request.user.master, professional = professional).filter(weekday=weekday).filter(is_active = True)
-        print(schedule)
         busy = Appointment.objects.filter(master = request.user.master, professional = professional, appdate = date).filter(is_active = True)
         
     except:

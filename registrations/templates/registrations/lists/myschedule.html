@@ -37,16 +37,23 @@
 
                 <td title="{{obj.client.name}}">
                     {% if obj.pk %}
-                    {{obj.client.name.split.0}}
+                    {{obj.client.name.split.0}} {{obj.client.name.split.1}} 
+                    
                     {%else%}
 
                     <a href="{% url 'create-appointment' %}?appdate={{obj.appdate}}&apphour={{obj.apphour}}&professional={{obj.professional.id}}"
                         class="btn btn-success btn-sm">Inserir</a>
                     {% endif%}
                 </td>
-                <td><a href="https://api.whatsapp.com/send?phone=55{{obj.client.tel}}&text=Olá temos um Agendamento dia {{obj.appdate}} as {{obj.apphour}} com {{obj.professional.first_name}}"
+                <td>
+                    {%if obj.client.tel|length == 11 %}
+                    <a href="https://api.whatsapp.com/send?phone=55{{obj.client.tel}}&text=Olá temos um Agendamento dia {{obj.appdate}} as {{obj.apphour}} com {{obj.professional.first_name}} Podemos confirmar?"
                         target="_blank">
-                        {{obj.client.tel}}</a>
+                        Enviar</a>
+                    {%else%}
+                    
+                    {%endif%}
+
                 </td>
                 <td>{{obj.get_status_display}}</td>
                 <td>{{obj.procedure.name}}</td>
@@ -64,7 +71,6 @@
                 </td>
 
                 <td>
-
                     {% if obj.pk %}
                     <a href="{% url 'edit-appointment' obj.pk %}" class="btn btn-warning btn-sm"><i
                             class="bi bi-pencil"></i></i></a>
