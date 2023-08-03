@@ -14,7 +14,7 @@
                         {%if prof.id == professionaldefault.id%}
                             <option value={{prof.id}} selected>{{prof.first_name.split.0}} | {{prof.nickname}}</option>
                         {%else%}
-                            <option value={{prof.id}}>{{prof.first_name.split.1}} | {{prof.nickname}}</option>
+                            <option value={{prof.id}}>{{prof.first_name.split.0}} | {{prof.nickname}}</option>
                         {%endif%}
                     {% endfor %}
                 </select>
