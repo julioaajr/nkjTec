@@ -108,8 +108,8 @@
                 $("#id_apphour").prop("disabled", false);
                 $("#id_appdate").prop("disabled", false);
                 $("#id_client").prop("disabled", false);
-                botao.disable = true;
                 this.form.submit();
+                botao.disable = true;
             }
 
             if ($("#id_procedure").prop('value') != "" && $('#my_checkbox').prop('checked') == true) {
@@ -118,9 +118,8 @@
                 $("#id_appdate").prop("disabled", false);
                 $("#id_client").prop("disabled", false);
                 $("#id_client").prop("value", 1);
-                botao.disable = true;
-
                 this.form.submit();
+                botao.disable = true;
             }
         };
 

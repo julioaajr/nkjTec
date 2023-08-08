@@ -76,29 +76,17 @@
                             class="bi bi-pencil"></i></i></a>
 
                     {% if obj.status == '0'%}
-                    <a href="{% url 'myschedule' %}?idappointment={{obj.pk}}&newstatus=1&date={{date}}"
+                    <a href="?idappointment={{obj.pk}}&newstatus=1&date={{date}}"
                         class="btn btn-info btn-sm">Confirmar</a>
-                    <a href="{% url 'myschedule' %}?idappointment={{obj.pk}}&newstatus=6&date={{date}}"
+                    <a href="?idappointment={{obj.pk}}&newstatus=6&date={{date}}"
                         class="btn btn-warning btn-sm">Cancelar</a>
                     {%endif%}
                     {% if obj.status == '1'%}
-                    <a href="{% url 'myschedule' %}?idappointment={{obj.pk}}&newstatus=2&date={{date}}"
-                        class="btn btn-info btn-sm">Chegou</a>
-                    <a href="{% url 'myschedule' %}?idappointment={{obj.pk}}&newstatus=5&date={{date}}"
+                    <a href="?idappointment={{obj.pk}}&newstatus=4&date={{date}}&payedstatus=S"
+                        class="btn btn-info btn-sm">Atendido e Pago</a>
+                    <a href="?idappointment={{obj.pk}}&newstatus=5&date={{date}}"
                         class="btn btn-warning btn-sm">Faltou</a>
                     {%endif%}
-                    {% if obj.status == '2'%}
-                    <a href="{% url 'myschedule' %}?idappointment={{obj.pk}}&newstatus=3&date={{date}}"
-                        class="btn btn-info btn-sm">Atender</a>
-
-                    {%endif%}
-                    {% if obj.status == '3'%}
-                    <a href="{% url 'myschedule' %}?idappointment={{obj.pk}}&newstatus=4&date={{date}}&payedstatus=S"
-                        class="btn btn-info btn-sm">Atendido e Pago</a>
-                    <a href="{% url 'myschedule' %}?idappointment={{obj.pk}}&newstatus=4&date={{date}}&payedstatus=N"
-                        class="btn btn-info btn-sm">Atendido</a>
-                    {%endif%}
-
 
                     {%if obj.status != '4'%}
                     <a href="{% url 'delete-appointment' obj.pk %}" class="btn btn-danger btn-sm"><i

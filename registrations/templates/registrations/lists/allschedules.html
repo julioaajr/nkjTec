@@ -83,6 +83,7 @@
 
                 </td>
 
+<!--
                 <td>
                     {% if obj.pk %}
                     <a href="{% url 'edit-appointment' obj.pk %}" class="btn btn-warning btn-sm"><i
@@ -112,6 +113,33 @@
                         class="btn btn-info btn-sm">Atendido</a>
                     {%endif%}
 
+
+                    {%if obj.status != '4'%}
+                    <a href="{% url 'delete-appointment' obj.pk %}" class="btn btn-danger btn-sm"><i
+                            class="bi bi-trash"></i></a>
+                    {% endif%}
+
+                    {%else%}
+                    {% endif%}
+                </td>
+-->       
+                <td>
+                    {% if obj.pk %}
+                    <a href="{% url 'edit-appointment' obj.pk %}" class="btn btn-warning btn-sm"><i
+                            class="bi bi-pencil"></i></i></a>
+
+                    {% if obj.status == '0'%}
+                    <a href="?idappointment={{obj.pk}}&newstatus=1&date={{date}}"
+                        class="btn btn-info btn-sm">Confirmar</a>
+                    <a href="?idappointment={{obj.pk}}&newstatus=6&date={{date}}"
+                        class="btn btn-warning btn-sm">Cancelar</a>
+                    {%endif%}
+                    {% if obj.status == '1'%}
+                    <a href="?idappointment={{obj.pk}}&newstatus=4&date={{date}}&payedstatus=S"
+                        class="btn btn-info btn-sm">Atendido e Pago</a>
+                    <a href="?idappointment={{obj.pk}}&newstatus=5&date={{date}}"
+                        class="btn btn-warning btn-sm">Faltou</a>
+                    {%endif%}
 
                     {%if obj.status != '4'%}
                     <a href="{% url 'delete-appointment' obj.pk %}" class="btn btn-danger btn-sm"><i
