@@ -553,6 +553,7 @@ class ScheduleDelete(LoginRequiredMixin, DeleteView):
     def form_valid(self, form):
         success_url = self.get_success_url()
         self.object.is_active = False
+        print(success_url)
         self.object.save()
         return HttpResponseRedirect(success_url)
 
