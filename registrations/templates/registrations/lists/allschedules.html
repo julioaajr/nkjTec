@@ -60,11 +60,13 @@
                         {% endif%}
                     </div>
                     <div class="col-4">
+                        {% if obj.pk%}
                         {% if obj.payed == 'S' %} 
                             Pago <i class="bi bi-check"></i>
                             {%else%} 
                             Não Pago
                             {%endif%}
+                        {% endif %}
                     </div>
 
 
