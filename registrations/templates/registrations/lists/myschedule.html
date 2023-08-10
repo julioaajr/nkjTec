@@ -19,9 +19,80 @@
         </table>
     </div>
     {% for obj in free %}
-    {{ forloop.counter }}
+    {% if obj.payed == 'S' %} 
+    <div class="container rounded border border-1 border-dark mb-1 d-block d-md-none" style="background-color:rgb(225, 255, 225)"> 
+    {%else%} 
+    <div class="container rounded border border-1 border-dark mb-1 d-block d-md-none" style="background-color:rgb(235, 235, 235)"> 
+    {%endif%}
+        <div class="row justify-content-center align-items-center g-2 mt-1">
+            
+            <div class="col">
+
+                <div class="row justify-content-center align-items-center g-2 ">
+
+                    <div class="col-2 row rounded border border-1 border-dark justify-content-center align-items-center mt-1 " >
+                        <strong>{{obj.apphour}}</strong>
+                    </div>
+
+                    <div class="col-6 mt-1">                    
+                        {% if obj.pk %}
+                        {{obj.client.name.split.0}} {{obj.client.name.split.1}} {{obj.client.name.split.2}}
+                        
+                        {%else%}
+                        <a href="{% url 'create-appointment' %}?appdate={{obj.appdate}}&apphour={{obj.apphour}}&professional={{obj.professional.id}}"
+                            class="btn btn-success btn-sm">Inserir</a>
+                        {% endif%}
+                    </div>
+                    <div class="col-4">
+                        {% if obj.payed == 'S' %} 
+                            Pago <i class="bi bi-check"></i>
+                            {%else%} 
+                            Não Pago
+                            {%endif%}
+                    </div>
+
+
+                </div>
+                <div class="row align-items-center g-2">
+                    <div class="col-6"> 
+                        {{obj.get_status_display}}
+                    </div>
+                    <div class="col-6">{{obj.procedure.name}}</div>
+                </div>
+                <div class="row justify-content-center align-items-center g-2 mb-1">
+                    <div class="col-12">
+                        {% if obj.pk %}
+                        <a href="{% url 'edit-appointment' obj.pk %}" class="btn btn-warning btn-sm"><i
+                                class="bi bi-pencil"></i></i></a>
+    
+                        {% if obj.status == '0'%}
+                        <a href="?idappointment={{obj.pk}}&newstatus=1&date={{date}}"
+                            class="btn btn-info btn-sm">Confirmar</a>
+                        <a href="?idappointment={{obj.pk}}&newstatus=6&date={{date}}"
+                            class="btn btn-warning btn-sm">Cancelar</a>
+                        {%endif%}
+                        {% if obj.status == '1'%}
+                        <a href="?idappointment={{obj.pk}}&newstatus=4&date={{date}}&payedstatus=S"
+                            class="btn btn-info btn-sm">Atendido e Pago</a>
+                        <a href="?idappointment={{obj.pk}}&newstatus=5&date={{date}}"
+                            class="btn btn-warning btn-sm">Faltou</a>
+                        {%endif%}
+    
+                        {%if obj.status != '4'%}
+                        <a href="{% url 'delete-appointment' obj.pk %}" class="btn btn-danger btn-sm"><i
+                                class="bi bi-trash"></i></a>
+                        {% endif%}
+    
+                        {%else%}
+                        {% endif%}
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
     {% endfor %}
-    <div class="table-responsive">
+    <div class="table-responsive d-none d-md-block">
         <table class="table table-striped table-sm">
             <tr>
                 <th>Hora</th>
