@@ -53,6 +53,12 @@
                     <div class="col-6 mt-1">                    
                         {% if obj.pk %}
                         {{obj.client.name.split.0}} {{obj.client.name.split.1}} {{obj.client.name.split.2}}
+                        {%if obj.client.tel|length == 11 %}
+                        <a class = "btn btn-success btn-sm"href="https://api.whatsapp.com/send?phone=55{{obj.client.tel}}&text=Olá temos um Agendamento dia {{obj.appdate}} as {{obj.apphour}} com {{obj.professional.first_name}} Podemos confirmar?"
+                        target="_blank">
+                        <i class="bi bi-whatsapp"></i></a>
+                        {%else%}
+                        {%endif%}
                         
                         {%else%}
                         <a href="{% url 'create-appointment' %}?appdate={{obj.appdate}}&apphour={{obj.apphour}}&professional={{obj.professional.id}}"
