@@ -9,7 +9,7 @@ class Procedure(models.Model):
     procedure_id = models.AutoField(primary_key=True)
     name = models.CharField(max_length=255, verbose_name="Nome do Procedimento")
     active = models.BooleanField(default=True, verbose_name="Ativo")
-    time = models.IntegerField(blank=True, null=True, verbose_name="Tempo (minutos)")
+    time = models.IntegerField(default=0, blank=False, null=False, verbose_name="Tempo (minutos)")
     price = models.FloatField(default= 0, blank=False, null=False, verbose_name="Preço R$")
     is_active = models.BooleanField(default=True, verbose_name="Ativo")
     master = models.ForeignKey(User, models.DO_NOTHING, blank = True, null = True, related_name="mastersprocedure", verbose_name="Master")

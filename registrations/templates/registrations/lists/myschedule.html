@@ -30,11 +30,11 @@
 
                 <div class="row justify-content-center align-items-center g-2 ">
 
-                    <div class="col-2 row rounded border border-1 border-dark justify-content-center align-items-center mt-1 " >
+                    <div class="col-1 row rounded border border-1 border-dark justify-content-center align-items-center mt-1 " >
                         <strong>{{obj.apphour}}</strong>
                     </div>
 
-                    <div class="col-6 mt-1">                    
+                    <div class="col-8 mt-1">                    
                         {% if obj.pk %}
                         {{obj.client.name.split.0}} {{obj.client.name.split.1}} {{obj.client.name.split.2}} 
                         {%if obj.client.tel|length == 11 %}
@@ -43,13 +43,13 @@
                         <i class="bi bi-whatsapp"></i></a>
                         {%else%}
                         {%endif%}
-                        
+
                         {%else%}
                         <a href="{% url 'create-appointment' %}?appdate={{obj.appdate}}&apphour={{obj.apphour}}&professional={{obj.professional.id}}"
                             class="btn btn-success btn-sm">Inserir</a>
                         {% endif%}
                     </div>
-                    <div class="col-4">
+                    <div class="col-3">
                         {% if obj.pk%}
                         {% if obj.payed == 'S' %} 
                             Pago <i class="bi bi-check"></i>

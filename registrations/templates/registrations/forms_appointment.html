@@ -109,7 +109,7 @@
                 $("#id_appdate").prop("disabled", false);
                 $("#id_client").prop("disabled", false);
                 this.form.submit();
-                botao.disable = true;
+                this.disabled = true;
             }
 
             if ($("#id_procedure").prop('value') != "" && $('#my_checkbox').prop('checked') == true) {
@@ -119,7 +119,7 @@
                 $("#id_client").prop("disabled", false);
                 $("#id_client").prop("value", 1);
                 this.form.submit();
-                botao.disable = true;
+                this.disabled = true;
             }
         };
 
